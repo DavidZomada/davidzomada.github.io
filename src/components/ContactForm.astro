@@ -10,7 +10,7 @@ const { locale } = Astro.props;
 const t = useUi(locale).contact;
 ---
 
-<form data-contact data-email={site.email} data-sent={t.sent} data-subject={t.title}>
+<form data-contact data-email={site.email} data-sent={t.sent} data-subject={t.subject}>
   <label>
     {t.name}
     <input name="name" type="text" autocomplete="name" required />

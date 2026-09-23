@@ -1,0 +1,137 @@
+---
+import '../styles/global.css';
+import '@fontsource-variable/newsreader/opsz.css';
+import '@fontsource-variable/newsreader/opsz-italic.css';
+import '@fontsource-variable/outfit';
+import { ClientRouter } from 'astro:transitions';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { type Locale } from '../site';
+import { otherLocale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+}
+
+const { locale, title, description } = Astro.props;
+const other = otherLocale(locale);
+const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#f3efe6" />
+    <link rel="alternate" hreflang={locale} href={Astro.url.pathname} />
+    <link rel="alternate" hreflang={other} href={`/${other}${path}`} />
+    <link rel="alternate" hreflang="x-default" href={`/en${path}`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={locale === 'en' ? 'en_US' : 'es_ES'} />
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip" href="#content">{locale === 'en' ? 'Skip to content' : 'Saltar al contenido'}</a>
+    <Header locale={locale} />
+    <main id="content" transition:animate="fade">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+    <div class="cursor" data-cursor aria-hidden="true"></div>
+  </body>
+</html>
+
+<script>
+  function markHeader() {
+    const header = document.querySelector('[data-header]');
+    if (!header) return;
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    onScroll();
+    if (header.dataset.bound === 'true') return;
+    header.dataset.bound = 'true';
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  function markSections() {
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.nav-section')];
+    const sections = links
+      .map((link) => {
+        const id = link.hash.replace('#', '');
+        const section = document.getElementById(id);
+        return section ? { link, section } : null;
+      })
+      .filter((item): item is { link: HTMLAnchorElement; section: HTMLElement } => item !== null);
+
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        for (const item of sections) {
+          const current = item.section === visible.target;
+          if (current) item.link.setAttribute('aria-current', 'true');
+          else item.link.removeAttribute('aria-current');
+        }
+      },
+      { rootMargin: '-40% 0px -50% 0px', threshold: [0.1, 0.4] },
+    );
+
+    for (const item of sections) observer.observe(item.section);
+  }
+
+  function bindCursor() {
+    const dot = document.querySelector('[data-cursor]');
+    if (!(dot instanceof HTMLElement) || dot.dataset.bound === 'true') return;
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!fine || calm) return;
+    dot.dataset.bound = 'true';
+
+    let x = 0;
+    let y = 0;
+    let cx = 0;
+    let cy = 0;
+    let frame = 0;
+
+    const place = () => {
+      cx += (x - cx) * 0.18;
+      cy += (y - cy) * 0.18;
+      dot.style.transform = `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%)`;
+      if (Math.abs(x - cx) > 0.4 || Math.abs(y - cy) > 0.4) frame = requestAnimationFrame(place);
+      else frame = 0;
+    };
+
+    window.addEventListener('pointermove', (event) => {
+      if (event.pointerType !== 'mouse') return;
+      x = event.clientX;
+      y = event.clientY;
+      dot.classList.add('is-on');
+      const target = event.target;
+      const hot = target instanceof Element && Boolean(target.closest('img, .shot, .portrait, .gallery figure'));
+      dot.classList.toggle('is-hot', hot);
+      if (!frame) frame = requestAnimationFrame(place);
+    });
+
+    document.documentElement.addEventListener('pointerleave', () => {
+      dot.classList.remove('is-on', 'is-hot');
+    });
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    markHeader();
+    markSections();
+    bindCursor();
+  });
+  bindCursor();
+</script>

@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import { useUi } from '../i18n/ui';
+
+const t = useUi('en');
+---
+
+<Base locale="en" title={t.notFound.title} description={t.notFound.title}>
+  <div class="wrap not-found">
+    <h1>{t.notFound.title}</h1>
+    <a class="text-link" href="/en/">{t.notFound.home}</a>
+  </div>
+</Base>

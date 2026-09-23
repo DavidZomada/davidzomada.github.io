@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import { isLocale, locales, type Locale } from '../../site';
+import { useUi } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang;
+if (!isLocale(lang)) {
+  return Astro.redirect('/en/');
+}
+const locale: Locale = lang;
+const t = useUi(locale);
+---
+
+<Base locale={locale} title={`${t.privacy.title} — David Zomada`} description={t.privacy.meta}>
+  <article class="privacy wrap">
+    <h1>{t.privacy.title}</h1>
+    {t.privacy.paragraphs.map((paragraph) => <p class="support">{paragraph}</p>)}
+  </article>
+</Base>

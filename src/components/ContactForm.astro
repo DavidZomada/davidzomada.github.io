@@ -1,0 +1,61 @@
+---
+import { site, type Locale } from '../site';
+import { useUi } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useUi(locale).contact;
+---
+
+<form data-contact data-email={site.email} data-sent={t.sent} data-subject={t.title}>
+  <label>
+    {t.name}
+    <input name="name" type="text" autocomplete="name" required />
+  </label>
+  <label>
+    {t.email}
+    <input name="email" type="email" autocomplete="email" required />
+  </label>
+  <label>
+    {t.project}
+    <input name="project" type="text" placeholder={t.projectHint} required />
+  </label>
+  <label>
+    {t.message}
+    <textarea name="message" required></textarea>
+  </label>
+  <button type="submit">{t.send}</button>
+  <p class="form-note" data-form-note hidden></p>
+</form>
+
+<script>
+  function bindContact() {
+    const form = document.querySelector('[data-contact]');
+    if (!(form instanceof HTMLFormElement) || form.dataset.bound === 'true') return;
+    form.dataset.bound = 'true';
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const name = String(data.get('name') ?? '');
+      const from = String(data.get('email') ?? '');
+      const project = String(data.get('project') ?? '');
+      const message = String(data.get('message') ?? '');
+      const email = form.dataset.email ?? '';
+      const subject = form.dataset.subject ?? 'Project';
+      const sent = form.dataset.sent ?? '';
+      const body = `${name}\n${from}\n\n${project}\n\n${message}`;
+      const note = form.querySelector('[data-form-note]');
+      if (note) {
+        note.hidden = false;
+        note.textContent = `${sent} ${email}.`;
+      }
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+  }
+
+  document.addEventListener('astro:page-load', bindContact);
+  bindContact();
+</script>

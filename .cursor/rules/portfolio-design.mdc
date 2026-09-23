@@ -1,0 +1,29 @@
+---
+description: Visual and content rules for the David Zomada portfolio
+alwaysApply: true
+---
+
+# Portfolio design
+
+This site is a one-person studio for David Zomada, in English (`/en`) and Spanish (`/es`). One scrolling home: hero, work, about, contact. Each app has its own page that uses the same chrome.
+
+## Visual system
+
+- Type: Newsreader for the name, project titles, and the large sentences. Outfit for interface, body, and the about and contact headlines. Do not introduce Inter, Roboto, Fraunces, or a second display face.
+- Color: warm paper `--bg`, warm ink `--ink`, one brass accent `--brass`. No purple gradients, no dark-mode theme, no extra accent colors.
+- Layout: generous space, hairline rules, almost-sharp corners. The portrait and app icons are the exception: rounded. No equal card grids, no drop shadows, no glassmorphism.
+- Background: warm paper with the fine dot grain already on `body`. Do not replace it with a flat fill or a second pattern.
+- Motion: short rises (under 700ms), a calm scale when the pointer is on a photo, a small brass ring that follows the pointer, and Astro’s page fade. Respect `prefers-reduced-motion`. Do not add GSAP, loading counters, or scroll-hijacking.
+
+## Content
+
+- Public name is David Zomada. Do not publish a street address or phone number.
+- Every claim must come from a shipped app or from copy already in `src/i18n/ui.ts` and `src/content/apps`. Do not invent metrics, clients, or job history. The about section lists PortView (Ports.tech, SwiftUI) and Noguiana (Xamarin, 2021–2022) only as written there.
+- Screenshots are the real interface captures in `Photos/Somada/Imagenes`, referenced from `src/lib/media.ts`. The home uses the app icon in `Photos/Somada/Logo`. Do not use the composite posters `image*_out.jpg`.
+- On small screens the portrait is a circle above the hero text. From tablet width up it sits beside the text, with rounded corners. The header collapses to a two-line icon; opening it fades in the sections over the full screen, and GitHub and LinkedIn move to the bottom of that menu. On wider screens those icons stay left of the language code, with no flags. A green pulse sits only beside the App Store status.
+
+## Adding an app
+
+1. Add `src/content/apps/en/<id>.md` and `src/content/apps/es/<id>.md` with the same `appId`, `order`, and frontmatter shape as Somada.
+2. Add the app’s images to `src/lib/media.ts`.
+3. Do not change the home layout or the project template for a new app. The home lists the collection on its own.

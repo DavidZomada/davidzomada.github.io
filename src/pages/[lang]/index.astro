@@ -1,0 +1,162 @@
+---
+import Base from '../../layouts/Base.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import { Image } from 'astro:assets';
+import portrait from '../../../Photos/Personal/IMG_2511.jpeg';
+import { isLocale, locales, site, type Locale } from '../../site';
+import { useUi } from '../../i18n/ui';
+import { getApps, mediaFor } from '../../lib/apps';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang;
+if (!isLocale(lang)) {
+  return Astro.redirect('/en/');
+}
+const locale: Locale = lang;
+const t = useUi(locale);
+const apps = await getApps(locale);
+---
+
+<Base locale={locale} title={t.meta.title} description={t.meta.description}>
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal>{t.hero.eyebrow}</p>
+      <div class="hero-grid">
+        <div>
+          <h1 data-reveal>
+            <span>David</span>
+            <span>Zomada</span>
+          </h1>
+          <p class="lede" data-reveal>{t.hero.line}</p>
+          <p class="support" data-reveal>{t.hero.support}</p>
+          <a class="text-link" href="#work" data-reveal>
+            {t.hero.cta}
+            <span aria-hidden="true">↓</span>
+          </a>
+        </div>
+        <figure class="portrait" data-reveal>
+          <Image
+            src={portrait}
+            alt={t.hero.photo}
+            widths={[480, 720, 960]}
+            sizes="(min-width: 800px) 26rem, 100vw"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="work">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-index">{t.work.index}</span>
+        <p class="section-label">{t.work.label}</p>
+      </div>
+      {
+        apps.length === 0 ? (
+          <p class="support">{t.work.empty}</p>
+        ) : (
+          apps.map((app) => {
+            const media = mediaFor(app.data.appId);
+            return (
+              <article class="project">
+                <a class="project-link" href={`/${locale}/work/${app.data.appId}`}>
+                  <div class="project-copy">
+                    <p class="project-meta">
+                      {app.data.year} · <span class="store-status">{app.data.status}<span class="pulse" aria-hidden="true"></span></span>
+                    </p>
+                    <h2>{app.data.title}</h2>
+                    <p class="project-summary">{app.data.summary}</p>
+                  </div>
+                  <div class="shot">
+                    <Image
+                      src={media.cover}
+                      alt={media.coverAlt[locale]}
+                      widths={[480, 720, 960]}
+                      sizes="(min-width: 800px) 34rem, 100vw"
+                    />
+                  </div>
+                  <span class="text-link">
+                    {t.work.view}
+                    <span aria-hidden="true">→</span>
+                  </span>
+                </a>
+              </article>
+            );
+          })
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-index">{t.about.index}</span>
+        <p class="section-label">{t.about.label}</p>
+      </div>
+      <h2>{t.about.title}</h2>
+      <div class="about-grid">
+      <div class="copy">
+        {t.about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <dl class="facts">
+        {
+          t.about.facts.map((fact) => (
+            <div>
+              <dt>{fact.k}</dt>
+              <dd>{fact.v}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      </div>
+      <div class="roles">
+        <p class="section-label">{t.about.experienceLabel}</p>
+        {
+          t.about.roles.map((role) => (
+            <article class="role-item">
+              <div>
+                <h3>{role.name}</h3>
+                <p class="meta">{role.meta}</p>
+              </div>
+              <div>
+                <p>{role.text}</p>
+                {role.href ? (
+                  <a class="text-link" href={role.href}>
+                    {t.project.store}
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                ) : null}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-index">{t.contact.index}</span>
+        <p class="section-label">{t.contact.label}</p>
+      </div>
+      <h2>{t.contact.title}</h2>
+      <div class="contact-grid">
+      <div class="copy">
+        <p>{t.contact.lede}</p>
+        <p>
+          <a class="contact-email" href={`mailto:${site.email}`}>{site.email}</a>
+        </p>
+      </div>
+      <ContactForm locale={locale} />
+      </div>
+    </div>
+  </section>
+</Base>

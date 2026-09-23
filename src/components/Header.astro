@@ -1,0 +1,75 @@
+---
+import { site, type Locale } from '../site';
+import { otherLocale, useUi } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useUi(locale);
+const other = otherLocale(locale);
+const home = `/${locale}/`;
+const switchHref = Astro.url.pathname.replace(`/${locale}/`, `/${other}/`) || `/${other}/`;
+---
+
+<header class="site-header" data-header>
+  <a class="brand" href={home}>David Zomada</a>
+  <nav class="nav" id="site-nav" aria-label={locale === 'en' ? 'Primary' : 'Principal'}>
+    <a class="nav-section" href={`${home}#work`}>{t.nav.work}</a>
+    <a class="nav-section" href={`${home}#about`}>{t.nav.about}</a>
+    <a class="nav-section" href={`${home}#contact`}>{t.nav.contact}</a>
+  </nav>
+  <div class="header-tools">
+    <div class="socials">
+    <a class="social" href={site.github} rel="me noopener" target="_blank" aria-label="GitHub">
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.7 7.7 0 0 1 8 4.67c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8" />
+      </svg>
+    </a>
+    <a class="social" href={site.linkedin} rel="me noopener" target="_blank" aria-label="LinkedIn">
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path fill="currentColor" d="M0 1.15C0 .51.52 0 1.16 0h13.68C15.48 0 16 .51 16 1.15v13.7c0 .64-.52 1.15-1.16 1.15H1.16C.52 16 0 15.49 0 14.85zM4.8 13.6V6.2H2.4v7.4zm-1.2-8.45c.77 0 1.4-.63 1.4-1.4S4.37 2.35 3.6 2.35s-1.4.62-1.4 1.4.62 1.4 1.4 1.4M13.6 13.6v-4.05c0-2.17-1.16-3.18-2.7-3.18-1.25 0-1.81.69-2.12 1.17V6.2H6.4c.03.7 0 7.4 0 7.4h2.38V9.7c0-.21.01-.41.08-.56.18-.41.58-.84 1.26-.84.89 0 1.25.68 1.25 1.67v3.63z" />
+      </svg>
+    </a>
+    </div>
+    <a class="lang" href={switchHref} hreflang={other} lang={other} aria-label={t.nav.languageLabel}>
+      {t.nav.language}
+    </a>
+    <button class="menu-toggle" type="button" data-menu aria-expanded="false" aria-controls="site-nav" aria-label={t.nav.menu}>
+      <span class="menu-bars" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<script>
+  function bindMenu() {
+    const header = document.querySelector('[data-header]');
+    const button = header?.querySelector('[data-menu]');
+    const nav = header?.querySelector('.nav');
+    if (!(header instanceof HTMLElement) || !(button instanceof HTMLButtonElement) || !nav) return;
+    if (button.dataset.bound === 'true') return;
+    button.dataset.bound = 'true';
+
+    const mobileQuery = window.matchMedia('(max-width: 720px)');
+
+    const setOpen = (open: boolean) => {
+      const mobile = mobileQuery.matches;
+      const visible = open && mobile;
+      header.classList.toggle('is-open', visible);
+      button.setAttribute('aria-expanded', String(visible));
+      nav.setAttribute('aria-hidden', mobile && !visible ? 'true' : 'false');
+      document.body.classList.toggle('menu-open', visible);
+    };
+
+    setOpen(false);
+    button.addEventListener('click', () => setOpen(!header.classList.contains('is-open')));
+    mobileQuery.addEventListener('change', () => setOpen(false));
+    nav.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => setOpen(false));
+    });
+  }
+
+  bindMenu();
+  document.addEventListener('astro:page-load', bindMenu);
+</script>

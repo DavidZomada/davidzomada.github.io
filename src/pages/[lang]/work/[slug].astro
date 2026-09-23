@@ -1,0 +1,85 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import { isLocale, locales, type Locale } from '../../../site';
+import { useUi } from '../../../i18n/ui';
+import { getApps, mediaFor, render } from '../../../lib/apps';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of locales) {
+    const apps = await getApps(lang);
+    for (const app of apps) {
+      paths.push({
+        params: { lang, slug: app.data.appId },
+      });
+    }
+  }
+  return paths;
+}
+
+const lang = Astro.params.lang;
+const slug = Astro.params.slug;
+if (!isLocale(lang) || !slug) {
+  return Astro.redirect('/en/');
+}
+const locale: Locale = lang;
+const app = (await getApps(locale)).find((entry) => entry.data.appId === slug);
+if (!app) {
+  return Astro.redirect(`/${locale}/`);
+}
+const t = useUi(locale);
+const media = mediaFor(app.data.appId);
+const { Content } = await render(app);
+---
+
+<Base locale={locale} title={t.project.metaTitle(app.data.title)} description={app.data.summary}>
+  <article class="project-page">
+    <div class="wrap">
+      <a class="back" href={`/${locale}/#work`}>← {t.project.back}</a>
+      <p class="meta">
+        {app.data.year} · {app.data.platform} · <span class="store-status">{app.data.status}<span class="pulse" aria-hidden="true"></span></span>
+      </p>
+      <h1>{app.data.title}</h1>
+      <div class="project-intro">
+        <p class="lede">{app.data.summary}</p>
+        <div>
+          <p class="role">{app.data.role}</p>
+          <a class="text-link store" href={app.data.storeUrl}>
+            {t.project.store}
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery" tabindex="0" aria-label={app.data.title}>
+      {
+        media.shots.map((shot, index) => (
+          <figure>
+            <Image
+              src={shot.src}
+              alt={shot.alt[locale]}
+              widths={[360, 540, 720]}
+              sizes="18.5rem"
+              loading={index === 0 ? 'eager' : 'lazy'}
+              transition:name={index === 0 ? `${app.data.appId}-cover` : undefined}
+            />
+          </figure>
+        ))
+      }
+    </div>
+
+    <div class="wrap project-body">
+      <div class="prose">
+        <Content />
+      </div>
+      <div>
+        <h2>{t.project.includes}</h2>
+        <ul class="points">
+          {app.data.points.map((point) => <li>{point}</li>)}
+        </ul>
+      </div>
+    </div>
+  </article>
+</Base>

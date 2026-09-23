@@ -1,0 +1,20 @@
+---
+import { site, type Locale } from '../site';
+import { useUi } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useUi(locale);
+const year = new Date().getFullYear();
+---
+
+<footer class="wrap site-footer">
+  <span>© {year} {site.name}. {t.footer.rights}</span>
+  <span class="footer-links">
+    <a href={`mailto:${site.email}`}>{site.email}</a>
+    <a href={`/${locale}/privacy`}>{t.footer.privacy}</a>
+  </span>
+</footer>

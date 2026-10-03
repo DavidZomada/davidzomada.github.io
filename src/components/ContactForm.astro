@@ -44,9 +44,9 @@ const t = useUi(locale).contact;
       const project = String(data.get('project') ?? '');
       const message = String(data.get('message') ?? '');
       const email = form.dataset.email ?? '';
-      const subject = form.dataset.subject ?? 'Project';
+      const subject = project || (form.dataset.subject ?? 'Subject');
       const sent = form.dataset.sent ?? '';
-      const body = `${name}\n${from}\n\n${project}\n\n${message}`;
+      const body = `${name}\n${from}\n\n${message}`;
       const note = form.querySelector('[data-form-note]');
       if (note) {
         note.hidden = false;

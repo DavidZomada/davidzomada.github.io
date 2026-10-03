@@ -44,7 +44,7 @@ const { Content } = await render(app);
       <div class="project-intro">
         <p class="lede">{app.data.summary}</p>
         <div>
-          <p class="role">{app.data.role}</p>
+          {app.data.role ? <p class="role">{app.data.role}</p> : null}
           <a class="text-link store" href={app.data.storeUrl}>
             {t.project.store}
             <span aria-hidden="true">↗</span>
@@ -53,20 +53,22 @@ const { Content } = await render(app);
       </div>
     </div>
 
-    <div class="gallery" tabindex="0" aria-label={app.data.title}>
+    <div class="gallery" data-gallery tabindex="0" aria-label={app.data.title}>
       {
-        media.shots.map((shot, index) => (
-          <figure>
-            <Image
-              src={shot.src}
-              alt={shot.alt[locale]}
-              widths={[360, 540, 720]}
-              sizes="18.5rem"
-              loading={index === 0 ? 'eager' : 'lazy'}
-              transition:name={index === 0 ? `${app.data.appId}-cover` : undefined}
-            />
-          </figure>
-        ))
+        [...media.shots, ...media.shots].map((shot, index) => {
+          const clone = index >= media.shots.length;
+          return (
+            <figure data-clone={clone ? '' : undefined} aria-hidden={clone ? 'true' : undefined}>
+              <Image
+                src={shot.src}
+                alt={clone ? '' : shot.alt[locale]}
+                widths={[360, 540, 720]}
+                sizes="16.5rem"
+                loading={index === 0 ? 'eager' : 'lazy'}
+              />
+            </figure>
+          );
+        })
       }
     </div>
 
@@ -83,3 +85,127 @@ const { Content } = await render(app);
     </div>
   </article>
 </Base>
+
+<script>
+  function bindGalleries() {
+    document.querySelectorAll('[data-gallery]').forEach((gallery) => {
+      if (!(gallery instanceof HTMLElement) || gallery.dataset.bound === 'true') return;
+      gallery.dataset.bound = 'true';
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return;
+
+      let paused = false;
+      let idle = 0;
+      let dragging = false;
+      let startX = 0;
+      let startScroll = 0;
+      let frame = 0;
+      let pos = gallery.scrollLeft;
+      let expected = gallery.scrollLeft;
+      let last = performance.now();
+
+      const half = () => gallery.scrollWidth / 2;
+
+      const write = (next) => {
+        const width = half();
+        if (width > 0) next = ((next % width) + width) % width;
+        pos = next;
+        if (Math.abs(gallery.scrollLeft - next) < 0.5) return;
+        expected = next;
+        gallery.scrollLeft = next;
+      };
+
+      const tick = (now) => {
+        if (!gallery.isConnected) return;
+        const dt = Math.min(now - last, 50);
+        last = now;
+        if (!paused && !dragging) write(pos + (28 * dt) / 1000);
+        frame = requestAnimationFrame(tick);
+      };
+
+      gallery.addEventListener(
+        'scroll',
+        () => {
+          if (dragging || Math.abs(gallery.scrollLeft - expected) < 1.5) return;
+          const width = half();
+          let next = gallery.scrollLeft;
+          if (width > 0 && next >= width) next -= width;
+          pos = next;
+          expected = next;
+          if (Math.abs(gallery.scrollLeft - next) >= 1) gallery.scrollLeft = next;
+        },
+        { passive: true },
+      );
+
+      const pause = () => {
+        paused = true;
+        window.clearTimeout(idle);
+      };
+
+      const resume = () => {
+        window.clearTimeout(idle);
+        idle = window.setTimeout(() => {
+          paused = false;
+        }, 900);
+      };
+
+      gallery.addEventListener('pointerdown', (event) => {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        dragging = true;
+        startX = event.clientX;
+        startScroll = gallery.scrollLeft;
+        try {
+          gallery.setPointerCapture(event.pointerId);
+        } catch {
+          /* pointer capture needs a real pointer */
+        }
+        pause();
+      });
+
+      gallery.addEventListener('pointermove', (event) => {
+        if (!dragging) return;
+        const width = half();
+        const next = startScroll - (event.clientX - startX);
+        if (width > 0) write(next);
+      });
+
+      const endDrag = () => {
+        if (!dragging) return;
+        dragging = false;
+        pos = gallery.scrollLeft;
+        resume();
+      };
+
+      gallery.addEventListener('pointerup', endDrag);
+      gallery.addEventListener('pointercancel', endDrag);
+
+      gallery.addEventListener(
+        'wheel',
+        (event) => {
+          const useX = Math.abs(event.deltaX) > Math.abs(event.deltaY);
+          const delta = useX ? event.deltaX : event.deltaY;
+          if (delta === 0) return;
+          event.preventDefault();
+          const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? gallery.clientWidth : 1;
+          write(pos + delta * unit);
+          pause();
+          resume();
+        },
+        { passive: false },
+      );
+
+      frame = requestAnimationFrame(tick);
+      document.addEventListener(
+        'astro:before-swap',
+        () => {
+          cancelAnimationFrame(frame);
+        },
+        { once: true },
+      );
+    });
+  }
+
+  bindGalleries();
+  document.addEventListener('astro:page-load', bindGalleries);
+</script>

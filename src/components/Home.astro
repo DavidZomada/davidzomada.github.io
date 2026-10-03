@@ -2,7 +2,9 @@
 import Base from '../layouts/Base.astro';
 import ContactForm from './ContactForm.astro';
 import { Image } from 'astro:assets';
-import portrait from '../../Photos/Personal/IMG_2511.jpeg';
+import portrait from '../../Photos/Personal/hero.jpeg';
+import aboutOne from '../../Photos/Personal/about_1.jpeg';
+import aboutTwo from '../../Photos/Personal/about_2.jpeg';
 import { site, type Locale } from '../site';
 import { useUi } from '../i18n/ui';
 import { getApps, mediaFor } from '../lib/apps';
@@ -23,10 +25,12 @@ const apps = await getApps(locale);
       <div class="hero-grid">
         <div>
           <h1 data-reveal>
-            <span>David</span>
-            <span>Zomada</span>
+            {t.hero.title.map((line) => <span>{line}</span>)}
           </h1>
-          <p class="lede" data-reveal>{t.hero.line}</p>
+          <p class="lede type-line" data-reveal data-typewriter data-phrases={JSON.stringify(t.hero.line)}>
+            <span data-type-text class="is-mark" aria-hidden="true">{t.hero.line[0]}</span><span class="type-caret" aria-hidden="true"></span>
+            <span class="sr-only">{t.hero.line.join(' ')}</span>
+          </p>
           <p class="support" data-reveal>{t.hero.support}</p>
           <a class="text-link" href="#work" data-reveal>
             {t.hero.cta}
@@ -87,31 +91,6 @@ const apps = await getApps(locale);
           })
         )
       }
-    </div>
-  </section>
-
-  <section class="section" id="about">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="section-index">{t.about.index}</span>
-        <p class="section-label">{t.about.label}</p>
-      </div>
-      <h2>{t.about.title}</h2>
-      <div class="about-grid">
-      <div class="copy">
-        {t.about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-      </div>
-      <dl class="facts">
-        {
-          t.about.facts.map((fact) => (
-            <div>
-              <dt>{fact.k}</dt>
-              <dd>{fact.v}</dd>
-            </div>
-          ))
-        }
-      </dl>
-      </div>
       <div class="roles">
         <p class="section-label">{t.about.experienceLabel}</p>
         {
@@ -137,6 +116,89 @@ const apps = await getApps(locale);
     </div>
   </section>
 
+  <section class="stack" aria-labelledby="stack-title">
+    <div class="wrap">
+      <div class="stack-frame">
+        <div class="stack-layout">
+          <div>
+            <h2 id="stack-title">{t.stack.label}</h2>
+            <p class="stack-line">{t.stack.line}</p>
+          </div>
+          <div class="stack-rows">
+            {
+              [t.stack.groups.slice(0, 3), t.stack.groups.slice(3)].map((row) => (
+                <div class="stack-row">
+                  {row.map((group) => (
+                    <div class="stack-group">
+                      <p class="stack-k">{group.k}</p>
+                      <p class="stack-v">
+                        {group.sdks ? (
+                          <span class="sdk">
+                            <button type="button" class="sdk-trigger" aria-expanded="false" aria-controls="apple-sdks">
+                              {group.v}
+                            </button>
+                            <span class="sdk-pop" id="apple-sdks" role="tooltip">
+                              {t.stack.sdks.join(' · ')}
+                            </span>
+                          </span>
+                        ) : (
+                          group.v
+                        )}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-index">{t.about.index}</span>
+        <p class="section-label">{t.about.label}</p>
+      </div>
+      <h2>{t.about.title}</h2>
+      <div class="about-grid">
+      <div class="copy">
+        {t.about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <dl class="facts">
+        {
+          t.about.facts.map((fact) => (
+            <div>
+              <dt>{fact.k}</dt>
+              <dd>{fact.v}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      </div>
+      <div class="about-photos">
+        <figure>
+          <Image
+            src={aboutOne}
+            alt={t.hero.photo}
+            widths={[480, 720, 960]}
+            sizes="(min-width: 800px) 34rem, 50vw"
+          />
+        </figure>
+        <figure>
+          <Image
+            src={aboutTwo}
+            alt={t.hero.photo}
+            widths={[480, 720, 960]}
+            sizes="(min-width: 800px) 34rem, 50vw"
+          />
+        </figure>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="contact">
     <div class="wrap">
       <div class="section-head">
@@ -156,3 +218,102 @@ const apps = await getApps(locale);
     </div>
   </section>
 </Base>
+
+<script>
+  function bindTypewriter() {
+    const el = document.querySelector('[data-typewriter]');
+    const text = el?.querySelector('[data-type-text]');
+    if (!(el instanceof HTMLElement) || !(text instanceof HTMLElement)) return;
+    if (el.dataset.bound === 'true') return;
+
+    let phrases: string[] = [];
+    try {
+      phrases = JSON.parse(el.dataset.phrases || '[]');
+    } catch {
+      return;
+    }
+    if (phrases.length < 2) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) {
+      text.textContent = phrases[0];
+      return;
+    }
+
+    el.dataset.bound = 'true';
+    let phrase = 0;
+    let index = phrases[0].length;
+    let deleting = false;
+    let timer = 0;
+
+    const show = (count: number) => {
+      text.textContent = phrases[phrase].slice(0, count);
+      text.classList.toggle('is-mark', count > 0);
+    };
+
+    const tick = () => {
+      if (!el.isConnected) return;
+      const current = phrases[phrase];
+      if (!deleting) {
+        index += 1;
+        show(index);
+        if (index >= current.length) {
+          deleting = true;
+          timer = window.setTimeout(tick, 1700);
+          return;
+        }
+        timer = window.setTimeout(tick, 46);
+        return;
+      }
+      index -= 1;
+      if (index <= 0) {
+        phrase = (phrase + 1) % phrases.length;
+        index = 0;
+        deleting = false;
+        show(0);
+        timer = window.setTimeout(tick, 320);
+        return;
+      }
+      show(index);
+      timer = window.setTimeout(tick, 26);
+    };
+
+    timer = window.setTimeout(() => {
+      deleting = true;
+      tick();
+    }, 1400);
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        window.clearTimeout(timer);
+      },
+      { once: true },
+    );
+  }
+
+  function bindSdk() {
+    document.querySelectorAll('.sdk').forEach((sdk) => {
+      if (!(sdk instanceof HTMLElement) || sdk.dataset.bound === 'true') return;
+      const button = sdk.querySelector('.sdk-trigger');
+      if (!(button instanceof HTMLButtonElement)) return;
+      sdk.dataset.bound = 'true';
+      const setOpen = (open: boolean) => {
+        sdk.classList.toggle('is-open', open);
+        button.setAttribute('aria-expanded', String(open));
+      };
+      button.addEventListener('click', () => setOpen(!sdk.classList.contains('is-open')));
+      document.addEventListener('pointerdown', (event) => {
+        if (event.target instanceof Node && sdk.contains(event.target)) return;
+        setOpen(false);
+      });
+    });
+  }
+
+  bindTypewriter();
+  bindSdk();
+  document.addEventListener('astro:page-load', () => {
+    bindTypewriter();
+    bindSdk();
+  });
+</script>

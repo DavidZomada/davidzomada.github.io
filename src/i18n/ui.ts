@@ -114,6 +114,12 @@ export const ui = {
     footer: {
       privacy: 'Privacy',
       rights: 'All rights reserved.',
+      fun: 'Because programming should also be fun!',
+      play: 'Play',
+      again: 'Again',
+      close: 'Close',
+      survivedOne: 'You survived {n} second.',
+      survivedMany: 'You survived {n} seconds.',
     },
     project: {
       back: 'Work',
@@ -248,6 +254,12 @@ export const ui = {
     footer: {
       privacy: 'Privacidad',
       rights: 'Todos los derechos reservados.',
+      fun: '¡Porque programar también debería ser divertido!',
+      play: 'Jugar',
+      again: 'Otra vez',
+      close: 'Cerrar',
+      survivedOne: 'Has sobrevivido {n} segundo.',
+      survivedMany: 'Has sobrevivido {n} segundos.',
     },
     project: {
       back: 'Trabajo',

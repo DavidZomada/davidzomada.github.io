@@ -12,6 +12,20 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="wrap site-footer">
+  <p class="flight-invite">
+    <span>{t.footer.fun}</span>
+    <button
+      type="button"
+      class="flight-play"
+      data-flight
+      data-one={t.footer.survivedOne}
+      data-many={t.footer.survivedMany}
+      data-again={t.footer.again}
+      data-close={t.footer.close}
+    >
+      {t.footer.play}
+    </button>
+  </p>
   <span>© {year} {site.name}. {t.footer.rights}</span>
   <span class="footer-links">
     <a href={`mailto:${site.email}`}>{site.email}</a>

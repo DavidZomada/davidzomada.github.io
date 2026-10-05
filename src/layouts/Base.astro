@@ -50,6 +50,8 @@ const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
 </html>
 
 <script>
+  import { bindFlight, stopFlight } from '../scripts/flight';
+
   function markHeader() {
     const header = document.querySelector('[data-header]');
     if (!header) return;
@@ -114,6 +116,10 @@ const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
     let frame = 0;
 
     const place = () => {
+      if (document.documentElement.classList.contains('is-flying')) {
+        frame = 0;
+        return;
+      }
       cx += (x - cx) * 0.18;
       cy += (y - cy) * 0.18;
       dot.style.transform = `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%)`;
@@ -123,6 +129,7 @@ const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
 
     window.addEventListener('pointermove', (event) => {
       if (event.pointerType !== 'mouse') return;
+      if (document.documentElement.classList.contains('is-flying')) return;
       x = event.clientX;
       y = event.clientY;
       dot.classList.add('is-on');
@@ -138,6 +145,7 @@ const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
   }
 
   document.addEventListener('astro:before-preparation', () => {
+    stopFlight();
     document.documentElement.style.scrollBehavior = 'auto';
   });
 
@@ -155,8 +163,10 @@ const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
     markHeader();
     markSections();
     bindCursor();
+    bindFlight();
   });
   markHeader();
   markSections();
   bindCursor();
+  bindFlight();
 </script>

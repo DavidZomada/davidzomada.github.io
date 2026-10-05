@@ -21,6 +21,7 @@ const switchHref = atRoot
   <nav class="nav" id="site-nav" aria-label={locale === 'en' ? 'Primary' : 'Principal'}>
     <a class="nav-section" href={`${home}#work`}>{t.nav.work}</a>
     <a class="nav-section" href={`${home}#about`}>{t.nav.about}</a>
+    <a class="nav-section" href={`${home}#journal`}>{t.nav.journal}</a>
     <a class="nav-section" href={`${home}#contact`}>{t.nav.contact}</a>
   </nav>
   <div class="header-tools">
@@ -33,6 +34,16 @@ const switchHref = atRoot
     <a class="social" href={site.linkedin} rel="me noopener" target="_blank" aria-label="LinkedIn">
       <svg viewBox="0 0 16 16" aria-hidden="true">
         <path fill="currentColor" d="M0 1.15C0 .51.52 0 1.16 0h13.68C15.48 0 16 .51 16 1.15v13.7c0 .64-.52 1.15-1.16 1.15H1.16C.52 16 0 15.49 0 14.85zM4.8 13.6V6.2H2.4v7.4zm-1.2-8.45c.77 0 1.4-.63 1.4-1.4S4.37 2.35 3.6 2.35s-1.4.62-1.4 1.4.62 1.4 1.4 1.4M13.6 13.6v-4.05c0-2.17-1.16-3.18-2.7-3.18-1.25 0-1.81.69-2.12 1.17V6.2H6.4c.03.7 0 7.4 0 7.4h2.38V9.7c0-.21.01-.41.08-.56.18-.41.58-.84 1.26-.84.89 0 1.25.68 1.25 1.67v3.63z" />
+      </svg>
+    </a>
+    <a class="social" href={site.x} rel="me noopener" target="_blank" aria-label="X">
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path fill="currentColor" d="M9.33 6.77 14.54.9h-1.24L8.78 5.95 5.05.9H.7l5.47 7.96L.7 15.1h1.24l4.78-5.56 3.9 5.56h4.35L9.33 6.77Zm-1.69 1.97-.55-.79L2.4 1.82h1.9l3.55 5.08.55.79 4.63 6.63h-1.9L7.64 8.74Z" />
+      </svg>
+    </a>
+    <a class="social" href={site.substack} rel="me noopener" target="_blank" aria-label="Substack">
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path fill="currentColor" d="M15 2.2H1V.6h14v1.6ZM1 3.9h14v1.6H1V3.9Zm0 3.2h14V15L8 11.1 1 15V7.1Z" />
       </svg>
     </a>
     </div>
@@ -69,7 +80,22 @@ const switchHref = atRoot
     button.addEventListener('click', () => setOpen(!header.classList.contains('is-open')));
     mobileQuery.addEventListener('change', () => setOpen(false));
     nav.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => setOpen(false));
+      if (!(link instanceof HTMLAnchorElement)) return;
+      link.addEventListener('click', (event) => {
+        const mobile = mobileQuery.matches;
+        setOpen(false);
+        if (!mobile) return;
+        const id = link.hash.replace('#', '');
+        const section = id ? document.getElementById(id) : null;
+        if (!section) return;
+        event.preventDefault();
+        void document.body.offsetHeight;
+        const behavior = document.documentElement.style.scrollBehavior;
+        document.documentElement.style.scrollBehavior = 'auto';
+        section.scrollIntoView({ block: 'start' });
+        document.documentElement.style.scrollBehavior = behavior;
+        history.pushState(null, '', link.hash);
+      });
     });
   }
 

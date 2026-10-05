@@ -10,6 +10,7 @@ export const ui = {
     nav: {
       work: 'Work',
       about: 'About',
+      journal: 'Build in public',
       contact: 'Contact',
       menu: 'Menu',
       language: 'ES',
@@ -86,8 +87,18 @@ export const ui = {
         },
       ],
     },
-    contact: {
+    journal: {
       index: '03',
+      label: 'Build in public',
+      title: 'Work in progress',
+      lede: 'Tech and travel essays in Substack. Building public in X.',
+      substack: 'Substack',
+      essays: 'Substack',
+      x: 'X',
+      empty: 'The next note will land here.',
+    },
+    contact: {
+      index: '04',
       label: 'Contact',
       title: 'Tell me your idea.',
       subject: 'Subject',
@@ -133,6 +144,7 @@ export const ui = {
     nav: {
       work: 'Trabajo',
       about: 'Sobre mí',
+      journal: 'Build in public',
       contact: 'Contacto',
       menu: 'Menú',
       language: 'EN',
@@ -209,8 +221,18 @@ export const ui = {
         },
       ],
     },
-    contact: {
+    journal: {
       index: '03',
+      label: 'Build in public',
+      title: 'Trabajo en marcha',
+      lede: 'Ensayos de tecnología y viajes en Substack. Construyendo en público en X.',
+      substack: 'Substack',
+      essays: 'Substack',
+      x: 'X',
+      empty: 'La siguiente nota aparecerá aquí.',
+    },
+    contact: {
+      index: '04',
       label: 'Contacto',
       title: 'Cuéntame tu idea.',
       subject: 'Asunto',

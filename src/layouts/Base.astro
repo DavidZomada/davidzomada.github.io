@@ -41,7 +41,7 @@ const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
   <body>
     <a class="skip" href="#content">{locale === 'en' ? 'Skip to content' : 'Saltar al contenido'}</a>
     <Header locale={locale} />
-    <main id="content" transition:animate="fade">
+    <main id="content">
       <slot />
     </main>
     <Footer locale={locale} />
@@ -60,7 +60,11 @@ const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
+  let stopSections = () => {};
+
   function markSections() {
+    stopSections();
+    const header = document.querySelector('[data-header]');
     const links = [...document.querySelectorAll<HTMLAnchorElement>('.nav-section')];
     const sections = links
       .map((link) => {
@@ -70,24 +74,29 @@ const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
       })
       .filter((item): item is { link: HTMLAnchorElement; section: HTMLElement } => item !== null);
 
-    if (sections.length === 0) return;
+    if (!(header instanceof HTMLElement) || sections.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!visible) return;
-        for (const item of sections) {
-          const current = item.section === visible.target;
-          if (current) item.link.setAttribute('aria-current', 'true');
-          else item.link.removeAttribute('aria-current');
-        }
-      },
-      { rootMargin: '-40% 0px -50% 0px', threshold: [0.1, 0.4] },
-    );
+    const update = () => {
+      const line = header.offsetHeight + 32;
+      let current: { link: HTMLAnchorElement; section: HTMLElement } | null = null;
+      for (const item of sections) {
+        if (item.section.getBoundingClientRect().top <= line) current = item;
+      }
+      const nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      if (nearBottom) current = sections[sections.length - 1];
+      for (const item of sections) {
+        if (item === current) item.link.setAttribute('aria-current', 'true');
+        else item.link.removeAttribute('aria-current');
+      }
+    };
 
-    for (const item of sections) observer.observe(item.section);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    stopSections = () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
   }
 
   function bindCursor() {
@@ -128,10 +137,26 @@ const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
     });
   }
 
+  document.addEventListener('astro:before-preparation', () => {
+    document.documentElement.style.scrollBehavior = 'auto';
+  });
+
+  document.addEventListener('astro:after-swap', () => {
+    window.scrollTo({ left: 0, top: 0, behavior: 'instant' });
+    const main = document.querySelector('main');
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!(main instanceof HTMLElement) || calm) return;
+    main.classList.add('is-entering');
+    main.addEventListener('animationend', () => main.classList.remove('is-entering'), { once: true });
+  });
+
   document.addEventListener('astro:page-load', () => {
+    document.documentElement.style.scrollBehavior = '';
     markHeader();
     markSections();
     bindCursor();
   });
+  markHeader();
+  markSections();
   bindCursor();
 </script>

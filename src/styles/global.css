@@ -859,6 +859,14 @@ h1 span {
   color: var(--muted);
 }
 
+#about .copy > p,
+.role-item p:not(.meta),
+.prose p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: manual;
+}
+
 .facts {
   list-style: none;
   margin: 0;
@@ -1500,10 +1508,8 @@ button:hover {
   transition: none;
 }
 
-html.is-flying,
-html.is-flying body {
-  overflow: hidden;
-  cursor: none;
+html.is-flying .cursor {
+  z-index: 60;
 }
 
 .flight-field {
@@ -1513,11 +1519,6 @@ html.is-flying body {
   width: 100%;
   height: 100%;
   touch-action: none;
-  cursor: none;
-}
-
-html.is-flying .cursor {
-  z-index: 60;
 }
 
 .flight-hud {
@@ -1560,6 +1561,12 @@ html.is-flying .cursor {
   border: 1px solid var(--line);
   background: var(--bg);
   color: var(--ink);
+  cursor: auto;
+  pointer-events: auto;
+}
+
+html.is-flight-card .cursor {
+  opacity: 0;
 }
 
 .flight-card p {

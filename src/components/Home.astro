@@ -377,7 +377,7 @@ const posts = await getSubstackPosts(locale);
 
     try {
       const response = await fetch(
-        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed)}&count=4`,
+        `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed)}`,
       );
       if (!response.ok || !root.isConnected) return;
       const data = (await response.json()) as {
@@ -407,14 +407,15 @@ const posts = await getSubstackPosts(locale);
           },
         ];
       });
-      if (posts.length === 0 || !root.isConnected) return;
+      const latest = posts.slice(0, 4);
+      if (latest.length === 0 || !root.isConnected) return;
 
       const current = [...root.querySelectorAll('.post h3')].map((heading) => heading.textContent).join('\n');
-      if (current === posts.map((post) => post.title).join('\n')) return;
+      if (current === latest.map((post) => post.title).join('\n')) return;
 
       const list = document.createElement('ol');
       list.className = 'posts';
-      for (const post of posts) {
+      for (const post of latest) {
         const item = document.createElement('li');
         const link = document.createElement('a');
         link.className = 'post';

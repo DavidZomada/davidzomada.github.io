@@ -17,7 +17,7 @@ interface RawPost {
 export const substackFeedUrl = 'https://davidzomada.substack.com/feed';
 
 const archiveUrl = 'https://davidzomada.substack.com/api/v1/archive?sort=new&limit=4';
-const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(substackFeedUrl)}&count=4`;
+const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(substackFeedUrl)}`;
 const essayLimit = 4;
 
 const headers = {

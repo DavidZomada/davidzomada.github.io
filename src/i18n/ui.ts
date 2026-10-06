@@ -118,6 +118,7 @@ export const ui = {
     project: {
       back: 'Work',
       store: 'View on the App Store',
+      support: 'Support',
       includes: 'What it makes easier',
       metaTitle: (name: string) => `${name} — David Zomada`,
     },
@@ -131,6 +132,7 @@ export const ui = {
       ],
     },
     supportCenter: {
+      back: 'Somada',
       title: 'Somada — Support Center',
       meta: 'Privacy policy, terms, and contact for the Somada app.',
       intro:
@@ -356,6 +358,7 @@ export const ui = {
     project: {
       back: 'Trabajo',
       store: 'Ver en el App Store',
+      support: 'Soporte',
       includes: 'Qué facilita',
       metaTitle: (name: string) => `${name} — David Zomada`,
     },
@@ -369,6 +372,7 @@ export const ui = {
       ],
     },
     supportCenter: {
+      back: 'Somada',
       title: 'Somada — Centro de soporte',
       meta: 'Política de privacidad, términos y contacto de la app Somada.',
       intro:

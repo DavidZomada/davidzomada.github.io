@@ -45,10 +45,15 @@ const { Content } = await render(app);
         <p class="lede">{app.data.summary}</p>
         <div>
           {app.data.role ? <p class="role">{app.data.role}</p> : null}
-          <a class="text-link store" href={app.data.storeUrl} target="_blank" rel="noopener noreferrer">
-            {t.project.store}
-            <span aria-hidden="true">↗</span>
-          </a>
+          <div class="project-links">
+            <a class="text-link store" href={app.data.storeUrl} target="_blank" rel="noopener noreferrer">
+              {t.project.store}
+              <span aria-hidden="true">↗</span>
+            </a>
+            {app.data.appId === 'somada' && (
+              <a class="text-link" href={`/${locale}/somada/support`}>{t.project.support}</a>
+            )}
+          </div>
         </div>
       </div>
     </div>

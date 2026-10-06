@@ -1,0 +1,54 @@
+---
+import { site, type Locale } from '../site';
+import { useUi } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useUi(locale);
+const sections = [
+  { title: t.supportCenter.privacyTitle, items: t.supportCenter.privacy },
+  { title: t.supportCenter.termsTitle, items: t.supportCenter.terms },
+];
+---
+
+<article class="privacy support-center wrap">
+  <h1>{t.supportCenter.title}</h1>
+  <p class="support">{t.supportCenter.intro}</p>
+
+  <h2>{t.supportCenter.aboutTitle}</h2>
+  <p class="support">{t.supportCenter.about}</p>
+  <ul>
+    {t.supportCenter.features.map((feature) => <li>{feature}</li>)}
+  </ul>
+
+  <h2>{t.supportCenter.helpTitle}</h2>
+  <p class="support">
+    {t.supportCenter.help}{' '}
+    <a href={`mailto:${site.email}`}>{site.email}</a>
+  </p>
+
+  {
+    sections.map((section) => (
+      <section>
+        <h2>{section.title}</h2>
+        {section.items.map((item) => (
+          <>
+            <h3>{item.title}</h3>
+            <p class="support">
+              {item.body}
+              {item.body.endsWith(':') && (
+                <>
+                  {' '}
+                  <a href={`mailto:${site.email}`}>{site.email}</a>
+                </>
+              )}
+            </p>
+          </>
+        ))}
+      </section>
+    ))
+  }
+</article>

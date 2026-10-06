@@ -1120,6 +1120,37 @@ button:hover {
   font-size: clamp(2.8rem, 6vw, 4.5rem);
 }
 
+.support-center h2 {
+  margin: 2.75rem 0 0;
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-variation-settings: "opsz" 36;
+}
+
+.support-center h3 {
+  margin: 1.6rem 0 0;
+  font-size: 1rem;
+  font-weight: 560;
+  letter-spacing: -0.011em;
+}
+
+.support-center ul {
+  max-width: var(--measure);
+  margin: 0.9rem 0 0;
+  padding: 0 0 0 1.15rem;
+  color: var(--muted);
+}
+
+.support-center li + li {
+  margin-top: 0.35rem;
+}
+
+.support-center a {
+  color: var(--ink);
+}
+
 .not-found {
   min-height: calc(100svh - var(--header));
   display: grid;

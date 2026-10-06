@@ -9,4 +9,7 @@ export default defineConfig({
       prefixDefaultLocale: true,
     },
   },
+  redirects: {
+    '/somada/support': '/en/somada/support',
+  },
 });

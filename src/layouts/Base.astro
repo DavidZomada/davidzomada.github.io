@@ -13,9 +13,10 @@ interface Props {
   locale: Locale;
   title: string;
   description: string;
+  robots?: string;
 }
 
-const { locale, title, description } = Astro.props;
+const { locale, title, description, robots } = Astro.props;
 const other = otherLocale(locale);
 const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
 ---
@@ -27,6 +28,7 @@ const path = Astro.url.pathname.replace(`/${locale}`, '') || '/';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {robots && <meta name="robots" content={robots} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#f3efe6" />
     <link rel="alternate" hreflang={locale} href={Astro.url.pathname} />

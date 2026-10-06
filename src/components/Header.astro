@@ -9,11 +9,14 @@ interface Props {
 const { locale } = Astro.props;
 const t = useUi(locale);
 const other = otherLocale(locale);
-const atRoot = Astro.url.pathname === '/';
+const path = Astro.url.pathname;
+const atRoot = path === '/';
 const home = atRoot ? '/' : `/${locale}/`;
 const switchHref = atRoot
   ? `/${other}/`
-  : Astro.url.pathname.replace(`/${locale}/`, `/${other}/`) || `/${other}/`;
+  : path.startsWith(`/${locale}/`)
+    ? path.replace(`/${locale}/`, `/${other}/`) || `/${other}/`
+    : `/${other}${path}`;
 ---
 
 <header class="site-header" data-header>

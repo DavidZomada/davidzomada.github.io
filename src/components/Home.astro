@@ -174,11 +174,35 @@ const posts = await getSubstackPosts(locale);
           t.about.facts.map((fact) => (
             <div>
               <dt>{fact.k}</dt>
-              <dd>{fact.v}</dd>
+              <dd>
+                {fact.live ? (
+                  <span class="store-status">
+                    {fact.v}
+                    <span class="pulse" aria-hidden="true" />
+                  </span>
+                ) : (
+                  fact.v
+                )}
+              </dd>
             </div>
           ))
         }
       </dl>
+      </div>
+      <div class="process">
+        <p class="section-label">{t.about.processLabel}</p>
+        <ol>
+          {
+            t.about.steps.map((step, index) => (
+              <li>
+                <span class="step-n">{String(index + 1).padStart(2, '0')}</span>
+                <h3>
+                  <span aria-hidden="true">{step.emoji}</span> {step.title}
+                </h3>
+              </li>
+            ))
+          }
+        </ol>
       </div>
       <div class="about-photos">
         <figure>

@@ -1,0 +1,26 @@
+---
+import Base from '../../../layouts/Base.astro';
+import SupportCenter from '../../../components/SupportCenter.astro';
+import { isLocale, locales, type Locale } from '../../../site';
+import { useUi } from '../../../i18n/ui';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang;
+if (!isLocale(lang)) {
+  return Astro.redirect('/somada/support');
+}
+const locale: Locale = lang;
+const t = useUi(locale);
+---
+
+<Base
+  locale={locale}
+  title={`${t.supportCenter.title} — David Zomada`}
+  description={t.supportCenter.meta}
+  robots="noindex, nofollow"
+>
+  <SupportCenter locale={locale} />
+</Base>

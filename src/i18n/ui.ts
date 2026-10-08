@@ -60,29 +60,38 @@ export const ui = {
     about: {
       index: '02',
       label: 'About',
-      title: 'One person, from the problem to the App Store.',
+      title: 'Mobile apps that serve people’s needs and desires.',
       paragraphs: [
-        'I am David Zomada, an indie iOS developer in Spain. When an app is still an idea, or a set of screens nobody can install, I take care of the interface, the code, and the release. You deal with me directly, in English or in Spanish.',
-        'Somada is the first app I have shipped on my own. Backpackers get the route, the day, and the photos in one journal, on iPhone and iPad.',
+        'I am David Zomada, a full-stack mobile developer from Spain. I have worked as a software engineer on international projects for 5+ years. I also build mobile applications for clients, and develop my own app ideas. I write about my tech experience and nomadic life along the way.',
       ],
       facts: [
-        { k: 'Based', v: 'Spain' },
-        { k: 'Languages', v: 'English and Spanish' },
-        { k: 'Platform', v: 'iOS and iPadOS' },
-        { k: 'Projects', v: 'Selected, a few at a time' },
+        { k: 'Based', v: 'Spain', live: false },
+        { k: 'Languages', v: 'English and Spanish', live: false },
+        { k: 'Platform', v: 'iOS and iPadOS', live: false },
+        { k: 'Availability', v: 'Open', live: true },
+      ],
+      processLabel: 'How do I work?',
+      steps: [
+        { emoji: '💭', title: 'Capture ideas' },
+        { emoji: '🕵️‍♂️', title: 'Research & validate the idea' },
+        { emoji: '👨‍💻', title: 'Build MVP' },
+        { emoji: '🚀', title: 'Launch' },
+        { emoji: '📈', title: 'Grow' },
+        { emoji: '💰', title: 'Monetise' },
+        { emoji: '⚙️', title: 'Maintenance' },
       ],
       experienceLabel: 'For other teams',
       roles: [
         {
           name: 'PortView',
           meta: 'iOS developer · Ports.tech',
-          text: 'Sailors with a booked mooring in a Spanish port need to reach it, and to manage the vessel’s documents and the crew’s details. I developed the SwiftUI app at Ports.tech so the way to the mooring, the papers, and the crew data sit in one place.',
+          text: 'PortView is a mobile application that connects sailors with ports and charter services. Mariners can book and send their documents at check-in, and the port receives them in the CRM. Users can be guided, the way Google Maps does, through the docks to their mooring. It also includes an augmented reality feature to locate key points while sailing. Points of interest and alerts cover the coasts of Spain. I was part of the mobile team that developed the iOS version.',
           href: 'https://apps.apple.com/app/portview/id1517446556',
         },
         {
           name: 'Nucleo',
-          meta: 'C# developer · Noguiana',
-          text: 'A warehouse has to keep the work on the floor in step with the stock in the database. From February 2021 to February 2022, in Madrid, I designed, developed, and tested Nucleo, the Android app, in C# with Xamarin, and administered the Azure server and the REST API that connected the two.',
+          meta: 'Android developer · Noguiana',
+          text: 'Nucleo is a multiplatform CRM for warehouses. I developed the Android app for the system. Operators used it to locate, assemble, and distribute deliveries, and to manage the warehouse stock and supplies.',
           href: '',
         },
       ],
@@ -114,16 +123,12 @@ export const ui = {
     footer: {
       privacy: 'Privacy',
       rights: 'All rights reserved.',
-      fun: 'Because programming should also be fun!',
-      play: 'Play',
-      again: 'Again',
-      close: 'Close',
-      survivedOne: 'You survived {n} second.',
-      survivedMany: 'You survived {n} seconds.',
     },
     project: {
       back: 'Work',
       store: 'View on the App Store',
+      start: 'Start journaling for free',
+      support: 'Support',
       includes: 'What it makes easier',
       metaTitle: (name: string) => `${name} — David Zomada`,
     },
@@ -134,6 +139,111 @@ export const ui = {
         'This site does not use analytics cookies and does not run advertising.',
         'If you use the contact form, your mail app opens with the message. Nothing is stored on this website. The email you send is read so I can reply.',
         'Somada, the app, has its own privacy policy on the App Store listing.',
+      ],
+    },
+    supportCenter: {
+      back: 'Somada',
+      title: 'Somada — Support Center',
+      meta: 'Privacy policy, terms, and contact for the Somada app.',
+      intro:
+        'Welcome to the support page for Somada, your personalized travel journal. Here you’ll find our Privacy Policy, Terms & Conditions, and contact information.',
+      aboutTitle: 'About Somada',
+      about:
+        'Somada helps you plan, track, and draw your backpacking adventures. Create your own route, add notes and photos, and keep a visual journal of every step.',
+      features: [
+        'Free-draw travel routes on the map',
+        'Add notes, photos, and locations to each day',
+        'View your trip timeline and maps',
+        'Explore the world using AI',
+        'Your data stays private unless you choose to share it',
+      ],
+      helpTitle: 'Need help?',
+      help: 'If you have questions or wish to delete your account, contact us at:',
+      privacyTitle: 'Privacy Policy',
+      privacy: [
+        {
+          title: '1. Data We Collect',
+          body: 'We may collect personal data such as your email, usage data, and geolocation when you use the app.',
+        },
+        {
+          title: '2. Purpose of Data Use',
+          body: 'We use your data to provide personalized features, enhance functionality, ensure account security, and improve the app experience.',
+        },
+        {
+          title: '3. Location Services',
+          body: 'We may request access to your location to enable features such as journaling with map routes. Location access is optional and requires your explicit permission.',
+        },
+        {
+          title: '4. Data Storage',
+          body: 'All data is stored securely in accordance with industry standards. We do not sell or share your data with third parties without your consent.',
+        },
+        {
+          title: '5. Third-Party Services',
+          body: 'Some features may rely on third-party providers such as OpenAI (ChatGPT). These services have their own privacy policies and may process data according to their terms.',
+        },
+        {
+          title: '6. Your Rights',
+          body: 'You have the right to access, correct, or delete your personal information at any time. Contact us if you wish to exercise these rights.',
+        },
+        {
+          title: '7. Account & Data Deletion',
+          body: 'You may delete your account and all related data directly from the app or by contacting us.',
+        },
+        {
+          title: '8. Contact',
+          body: 'For any privacy questions, contact us at:',
+        },
+      ],
+      termsTitle: 'Terms & Conditions',
+      terms: [
+        {
+          title: '1. Account & Access',
+          body: 'You must be at least 13 years old to create an account. You are responsible for maintaining the confidentiality of your login credentials and for any activity under your account.',
+        },
+        {
+          title: '2. Private Content',
+          body: 'You may create and store personal content such as journal entries, photos, and routes. This content is private unless you explicitly choose to share it.',
+        },
+        {
+          title: '3. Subscriptions',
+          body: 'Some features require a paid subscription. Payments are processed via the App Store, and auto-renewal can be managed through your account settings.',
+        },
+        {
+          title: '4. Personal Data & Location',
+          body: 'We collect personal and location data to enhance your experience. This includes authentication data, usage statistics, and geolocation. Data is stored securely and never sold to third parties.',
+        },
+        {
+          title: '5. Apple Platform Policies',
+          body: 'This app complies with Apple guidelines on data privacy, location usage, and in-app purchases. Users are informed and must grant explicit consent for any location tracking or personal data collection.',
+        },
+        {
+          title: '6. Limitation of Liability',
+          body: 'We are not liable for any indirect or incidental damages resulting from the use of the app. Use the service at your own risk.',
+        },
+        {
+          title: '7. AI Content Disclaimer',
+          body: 'Some features use OpenAI’s ChatGPT via API. While we aim to provide helpful and accurate content, the AI may occasionally produce incorrect or misleading information.',
+        },
+        {
+          title: '8. Prohibited Conduct',
+          body: 'You agree not to misuse the app, reverse engineer its functions, or store any illegal, harmful or abusive content.',
+        },
+        {
+          title: '9. Account Deletion',
+          body: 'You may request to delete your account and data at any time via the app or by contacting us. Upon confirmation, your data will be permanently removed in compliance with privacy regulations.',
+        },
+        {
+          title: '10. Contact',
+          body: 'For any questions about these terms, contact us at:',
+        },
+        {
+          title: '11. Changes to Terms',
+          body: 'We may update these terms from time to time. Continued use of the app constitutes your acceptance of any changes.',
+        },
+        {
+          title: '12. Governing Law',
+          body: 'These terms are governed by the laws of the country in which you reside.',
+        },
       ],
     },
     notFound: {
@@ -200,29 +310,38 @@ export const ui = {
     about: {
       index: '02',
       label: 'Sobre mí',
-      title: 'Una persona, del problema al App Store.',
+      title: 'Apps móviles que responden a lo que la gente necesita y desea.',
       paragraphs: [
-        'Soy David Zomada, desarrollador iOS indie en España. Cuando una app sigue siendo una idea, o un conjunto de pantallas que nadie puede instalar, me encargo de la interfaz, el código y la publicación. Tratas conmigo directamente, en español o en inglés.',
-        'Somada es la primera app que he publicado por mi cuenta. Quien viaja con mochila tiene la ruta, el día y las fotos en un solo diario, en el iPhone y el iPad.',
+        'Soy David Zomada, desarrollador móvil full stack de España. He trabajado como ingeniero de software en proyectos internacionales durante más de 5 años. También hago aplicaciones móviles para clientes y desarrollo mis propias ideas. Escribo sobre mi experiencia técnica y la vida nómada por el camino.',
       ],
       facts: [
-        { k: 'Base', v: 'España' },
-        { k: 'Idiomas', v: 'Español e inglés' },
-        { k: 'Plataforma', v: 'iOS e iPadOS' },
-        { k: 'Proyectos', v: 'Seleccionados, pocos a la vez' },
+        { k: 'Base', v: 'España', live: false },
+        { k: 'Idiomas', v: 'Español e inglés', live: false },
+        { k: 'Plataforma', v: 'iOS y iPadOS', live: false },
+        { k: 'Disponibilidad', v: 'Libre', live: true },
+      ],
+      processLabel: '¿Cómo trabajo?',
+      steps: [
+        { emoji: '💭', title: 'Capturar ideas' },
+        { emoji: '🕵️‍♂️', title: 'Investigar y validar la idea' },
+        { emoji: '👨‍💻', title: 'Construir el MVP' },
+        { emoji: '🚀', title: 'Lanzar' },
+        { emoji: '📈', title: 'Crecer' },
+        { emoji: '💰', title: 'Monetizar' },
+        { emoji: '⚙️', title: 'Mantenimiento' },
       ],
       experienceLabel: 'Para otros equipos',
       roles: [
         {
           name: 'PortView',
           meta: 'Desarrollador iOS · Ports.tech',
-          text: 'Quien tiene un amarre reservado en un puerto de España necesita llegar hasta él, y gestionar la documentación del barco y los datos de la tripulación. Desarrollé la app en SwiftUI de Ports.tech para reunir el camino al amarre, los papeles y la tripulación.',
+          text: 'PortView es una aplicación móvil que conecta a navegantes con puertos y servicios de charter. Pueden reservar y enviar sus documentos en el check-in, y el puerto los recibe en el CRM. La app guía hasta el amarre, como hace Google Maps, a través de los muelles. También incluye realidad aumentada para localizar puntos clave durante la navegación. Hay puntos de interés y alertas en las costas de España. Formé parte del equipo móvil que desarrolló la versión de iOS.',
           href: 'https://apps.apple.com/es/app/portview/id1517446556',
         },
         {
           name: 'Nucleo',
-          meta: 'Desarrollador C# · Noguiana',
-          text: 'Un almacén tiene que mantener el trabajo en planta al día con el stock de la base de datos. De febrero de 2021 a febrero de 2022, en Madrid, diseñé, desarrollé y probé Nucleo, la app de Android, en C# con Xamarin, y administré el servidor de Azure y la API REST que conectaba las dos cosas.',
+          meta: 'Desarrollador Android · Noguiana',
+          text: 'Nucleo es un CRM multiplataforma para almacenes. Desarrollé la app de Android del sistema. Quien opera en el almacén la usaba para localizar, preparar y distribuir entregas, y para gestionar el stock y los suministros.',
           href: '',
         },
       ],
@@ -254,16 +373,12 @@ export const ui = {
     footer: {
       privacy: 'Privacidad',
       rights: 'Todos los derechos reservados.',
-      fun: '¡Porque programar también debería ser divertido!',
-      play: 'Jugar',
-      again: 'Otra vez',
-      close: 'Cerrar',
-      survivedOne: 'Has sobrevivido {n} segundo.',
-      survivedMany: 'Has sobrevivido {n} segundos.',
     },
     project: {
       back: 'Trabajo',
       store: 'Ver en el App Store',
+      start: 'Empieza tu diario gratis',
+      support: 'Soporte',
       includes: 'Qué facilita',
       metaTitle: (name: string) => `${name} — David Zomada`,
     },
@@ -274,6 +389,111 @@ export const ui = {
         'Este sitio no usa cookies de analítica ni publicidad.',
         'Si usas el formulario, se abre tu app de correo con el mensaje. Esta web no guarda nada. El email que envías lo leo para poder responder.',
         'Somada, la app, tiene su propia política de privacidad en la ficha del App Store.',
+      ],
+    },
+    supportCenter: {
+      back: 'Somada',
+      title: 'Somada — Centro de soporte',
+      meta: 'Política de privacidad, términos y contacto de la app Somada.',
+      intro:
+        'Bienvenido a la página de soporte de Somada, tu diario de viaje personal. Aquí encontrarás la política de privacidad, los términos y condiciones, y la información de contacto.',
+      aboutTitle: 'Sobre Somada',
+      about:
+        'Somada te ayuda a planificar, seguir y dibujar tus rutas de mochilero. Crea tu propia ruta, añade notas y fotos, y guarda un diario visual de cada paso.',
+      features: [
+        'Dibuja a mano las rutas del viaje sobre el mapa',
+        'Añade notas, fotos y lugares a cada día',
+        'Consulta la cronología y los mapas del viaje',
+        'Explora el mundo con IA',
+        'Tus datos siguen siendo privados salvo que decidas compartirlos',
+      ],
+      helpTitle: '¿Necesitas ayuda?',
+      help: 'Si tienes preguntas o quieres eliminar tu cuenta, escríbenos a:',
+      privacyTitle: 'Política de privacidad',
+      privacy: [
+        {
+          title: '1. Datos que recogemos',
+          body: 'Podemos recoger datos personales como tu email, datos de uso y geolocalización cuando usas la app.',
+        },
+        {
+          title: '2. Finalidad del uso de los datos',
+          body: 'Usamos tus datos para ofrecer funciones personalizadas, mejorar el funcionamiento, proteger la cuenta y mejorar la experiencia de la app.',
+        },
+        {
+          title: '3. Servicios de localización',
+          body: 'Podemos pedir acceso a tu ubicación para funciones como el diario con rutas en el mapa. El acceso a la ubicación es opcional y requiere tu permiso explícito.',
+        },
+        {
+          title: '4. Almacenamiento de datos',
+          body: 'Todos los datos se almacenan de forma segura conforme a los estándares del sector. No vendemos ni compartimos tus datos con terceros sin tu consentimiento.',
+        },
+        {
+          title: '5. Servicios de terceros',
+          body: 'Algunas funciones pueden depender de proveedores externos como OpenAI (ChatGPT). Esos servicios tienen sus propias políticas de privacidad y pueden tratar los datos según sus términos.',
+        },
+        {
+          title: '6. Tus derechos',
+          body: 'Tienes derecho a acceder, corregir o eliminar tu información personal en cualquier momento. Escríbenos si quieres ejercer esos derechos.',
+        },
+        {
+          title: '7. Eliminación de la cuenta y los datos',
+          body: 'Puedes eliminar tu cuenta y todos los datos relacionados desde la app o escribiéndonos.',
+        },
+        {
+          title: '8. Contacto',
+          body: 'Para cualquier pregunta sobre privacidad, escríbenos a:',
+        },
+      ],
+      termsTitle: 'Términos y condiciones',
+      terms: [
+        {
+          title: '1. Cuenta y acceso',
+          body: 'Debes tener al menos 13 años para crear una cuenta. Eres responsable de mantener la confidencialidad de tus credenciales y de cualquier actividad en tu cuenta.',
+        },
+        {
+          title: '2. Contenido privado',
+          body: 'Puedes crear y guardar contenido personal, como entradas del diario, fotos y rutas. Ese contenido es privado salvo que decidas compartirlo de forma explícita.',
+        },
+        {
+          title: '3. Suscripciones',
+          body: 'Algunas funciones requieren una suscripción de pago. Los pagos se procesan a través del App Store, y la renovación automática se gestiona desde los ajustes de tu cuenta.',
+        },
+        {
+          title: '4. Datos personales y ubicación',
+          body: 'Recogemos datos personales y de ubicación para mejorar tu experiencia. Esto incluye datos de autenticación, estadísticas de uso y geolocalización. Los datos se almacenan de forma segura y nunca se venden a terceros.',
+        },
+        {
+          title: '5. Políticas de la plataforma de Apple',
+          body: 'Esta app cumple las directrices de Apple sobre privacidad de datos, uso de la ubicación y compras dentro de la app. Se informa a quien la usa y debe dar un consentimiento explícito para cualquier seguimiento de ubicación o recogida de datos personales.',
+        },
+        {
+          title: '6. Limitación de responsabilidad',
+          body: 'No somos responsables de daños indirectos o incidentales derivados del uso de la app. Usas el servicio bajo tu propia responsabilidad.',
+        },
+        {
+          title: '7. Aviso sobre el contenido de IA',
+          body: 'Algunas funciones usan ChatGPT de OpenAI a través de su API. Aunque buscamos ofrecer contenido útil y preciso, la IA puede producir en ocasiones información incorrecta o engañosa.',
+        },
+        {
+          title: '8. Conducta prohibida',
+          body: 'Te comprometes a no hacer un uso indebido de la app, a no aplicar ingeniería inversa a sus funciones y a no guardar contenido ilegal, dañino o abusivo.',
+        },
+        {
+          title: '9. Eliminación de la cuenta',
+          body: 'Puedes solicitar la eliminación de tu cuenta y tus datos en cualquier momento desde la app o escribiéndonos. Tras la confirmación, tus datos se eliminarán de forma permanente conforme a la normativa de privacidad.',
+        },
+        {
+          title: '10. Contacto',
+          body: 'Para cualquier pregunta sobre estos términos, escríbenos a:',
+        },
+        {
+          title: '11. Cambios en los términos',
+          body: 'Podemos actualizar estos términos de vez en cuando. Seguir usando la app supone que aceptas los cambios.',
+        },
+        {
+          title: '12. Ley aplicable',
+          body: 'Estos términos se rigen por las leyes del país en el que resides.',
+        },
       ],
     },
     notFound: {

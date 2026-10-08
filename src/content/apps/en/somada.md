@@ -10,14 +10,12 @@ role: ''
 storeUrl: https://apps.apple.com/app/somada/id6740721557
 order: 1
 points:
-  - Read the trip as a globe or as a paper map, with the photos on the route
-  - See the path you took, and the distance it covers
-  - Keep a page for each place, with the date, the note, and the photo
-  - Remember the stops, and how you traveled between them
+  - A geolocated journal; each page is a pin on the world
+  - Unlimited routes for all kinds of vehicles
+  - Customise your journal map style
+  - Free
 ---
 
-Somada is a travel journal for backpackers. A trip is easy to lose in pieces: the route in one place, the photos in another, and the day in a note that never meets them. Somada keeps the three together, so the journey is more than a list of pins.
+Somada is for those who don’t mind spending time writing in their journal. For those who see the map as a canvas to fill with memories, photos, and adventures.
 
-You draw the path, set the photos along it, and write the day where it happened. The same trip can be read as a globe, as a paper map, or as a journal.
-
-I designed and built it on my own, and shipped it on the App Store in 2025. It runs on iPhone and iPad, in English and Spanish.
+Every coffee place, monument, street, mountain peak, or remote lake is waiting to mean something special. The park where you had your first kiss, the road trip you took with someone you love, or the border you crossed while hiking. Somada is a place to save all those memories.

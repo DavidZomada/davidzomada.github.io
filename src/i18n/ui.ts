@@ -335,13 +335,13 @@ export const ui = {
         {
           name: 'PortView',
           meta: 'Desarrollador iOS · Ports.tech',
-          text: 'PortView es una aplicación móvil que conecta a navegantes con puertos y servicios de charter. Pueden reservar y enviar sus documentos en el check-in, y el puerto los recibe en el CRM. La app guía hasta el amarre, como hace Google Maps, a través de los muelles. También incluye realidad aumentada para localizar puntos clave durante la navegación. Hay puntos de interés y alertas en las costas de España. Formé parte del equipo móvil que desarrolló la versión de iOS.',
+          text: 'PortView es una aplicación móvil que conecta a navegantes con puertos y servicios de charter. Los marineros pueden reservar y enviar sus documentos en el check-in, y el puerto los recibe en su CRM. La app guía hasta el amarre, como lo hace Google Maps, a través de los muelles. También incluye realidad aumentada para localizar puntos clave durante la navegación. Hay todo tipo de puntos de interés y alertas en las costas de España. Formé parte del equipo móvil que desarrolló la versión de iOS.',
           href: 'https://apps.apple.com/es/app/portview/id1517446556',
         },
         {
           name: 'Nucleo',
           meta: 'Desarrollador Android · Noguiana',
-          text: 'Nucleo es un CRM multiplataforma para almacenes. Desarrollé la app de Android del sistema. Quien opera en el almacén la usaba para localizar, preparar y distribuir entregas, y para gestionar el stock y los suministros.',
+          text: 'Nucleo es un CRM multiplataforma para la gestión de almacenes. Desarrollé la app de Android de este sistema. Los operarios del almacén usan esta aplicación para localizar, preparar y distribuir entregas, y para gestionar el stock y los suministros.',
           href: '',
         },
       ],
@@ -377,7 +377,7 @@ export const ui = {
     project: {
       back: 'Trabajo',
       store: 'Ver en el App Store',
-      start: 'Empieza tu diario gratis',
+      start: 'Empieza a escribir tu diario gratis',
       support: 'Soporte',
       includes: 'Qué facilita',
       metaTitle: (name: string) => `${name} — David Zomada`,

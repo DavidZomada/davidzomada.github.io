@@ -843,7 +843,6 @@ h1 span {
 }
 
 .role-item p {
-  max-width: var(--measure);
   margin: 0;
   color: var(--muted);
 }
@@ -857,6 +856,14 @@ h1 span {
   max-width: var(--measure);
   margin: 0 0 1rem;
   color: var(--muted);
+}
+
+#about .copy > p,
+.role-item p:not(.meta),
+.prose p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: manual;
 }
 
 .facts {
@@ -881,6 +888,40 @@ h1 span {
 
 .facts dd {
   margin: 0;
+}
+
+.process {
+  margin-top: 2.75rem;
+}
+
+.process ol {
+  list-style: none;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.process li {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.process .step-n {
+  color: var(--faint);
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+}
+
+.process h3 {
+  margin: 0;
+  font-family: var(--sans);
+  font-weight: 470;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
 }
 
 .contact-email {
@@ -1037,6 +1078,24 @@ button:hover {
   margin-top: 0;
 }
 
+.cta {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 0;
+  padding: 0.85rem 1.3rem;
+  background: var(--ink);
+  color: var(--bg);
+  text-decoration: none;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.cta:hover {
+  background: var(--brass);
+  color: var(--bg);
+}
+
 .store {
   margin-top: 0;
 }
@@ -1109,6 +1168,10 @@ button:hover {
   padding: 0.9rem 0;
   border-bottom: 1px solid var(--line);
   color: var(--muted);
+}
+
+.points li.is-free {
+  padding-block: 1.15rem;
 }
 
 .points h2 {

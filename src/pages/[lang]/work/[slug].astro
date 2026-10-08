@@ -81,7 +81,17 @@ const { Content } = await render(app);
       <div>
         <h2>{t.project.includes}</h2>
         <ul class="points">
-          {app.data.points.map((point) => <li>{point}</li>)}
+          {app.data.points.map((point) =>
+            point === 'Free' || point === 'Gratis' ? (
+              <li class="is-free">
+                <a class="cta" href={app.data.storeUrl} target="_blank" rel="noopener noreferrer">
+                  {t.project.start}
+                </a>
+              </li>
+            ) : (
+              <li>{point}</li>
+            ),
+          )}
         </ul>
       </div>
     </div>

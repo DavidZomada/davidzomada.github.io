@@ -18,6 +18,14 @@ const { locale } = Astro.props;
 const t = useUi(locale);
 const apps = await getApps(locale);
 const posts = await getSubstackPosts(locale);
+
+const stepIcons: Record<string, string> = {
+  talk: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/>',
+  build: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+  launch: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+};
+const flow = t.process;
+const stepNumber = (index: number) => String(index + 1).padStart(2, '0');
 ---
 
 <Base locale={locale} title={t.meta.title} description={t.meta.description}>
@@ -158,6 +166,125 @@ const posts = await getSubstackPosts(locale);
     </div>
   </section>
 
+  <section class="section process-section" id="process" aria-labelledby="process-title">
+    <div class="wrap">
+      <p class="section-label" id="process-title">{flow.label}</p>
+      <ol class="process-steps">
+        {
+          flow.steps.map((step, index) => (
+            <li>
+              <button
+                type="button"
+                class="process-step"
+                data-step-open={`step-dialog-${index}`}
+                aria-haspopup="dialog"
+              >
+                <span class="process-step-top">
+                  <span class="process-step-n">{stepNumber(index)}</span>
+                  <span class="process-step-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                      set:html={stepIcons[step.icon]}
+                    />
+                  </span>
+                </span>
+                <span class="process-step-title">{step.title}</span>
+                <span class="process-step-body">{step.body}</span>
+                <span class="process-step-more">
+                  {flow.more}
+                  <span aria-hidden="true">→</span>
+                </span>
+              </button>
+              <dialog class="step-dialog" id={`step-dialog-${index}`} aria-labelledby={`step-dialog-title-${index}`}>
+                <div class="step-dialog-inner">
+                  <div class="step-dialog-head">
+                    <span class="process-step-icon">
+                      <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                      set:html={stepIcons[step.icon]}
+                    />
+                    </span>
+                    <div>
+                      <p class="step-dialog-n">{stepNumber(index)} / {stepNumber(flow.steps.length - 1)}</p>
+                      <h3 id={`step-dialog-title-${index}`}>{step.title}</h3>
+                    </div>
+                    <button type="button" class="step-dialog-close" data-step-close aria-label={flow.close}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <p class="step-dialog-lead">{step.body}</p>
+                  <ul class="step-dialog-points">
+                    {step.points.map((point) => (
+                      <li>{point}</li>
+                    ))}
+                  </ul>
+                  <p class="step-dialog-outcome">
+                    <span>{flow.outcomeLabel}</span>
+                    {step.outcome}
+                  </p>
+                  <div class="step-dialog-nav">
+                    {index > 0 ? (
+                      <button
+                        type="button"
+                        class="step-dialog-go is-previous"
+                        data-step-go={`step-dialog-${index - 1}`}
+                        aria-label={`${flow.previous}: ${flow.steps[index - 1].title}`}
+                        title={flow.steps[index - 1].title}
+                      >
+                        <span class="step-dialog-arrow" aria-hidden="true">←</span>
+                      </button>
+                    ) : (
+                      <span />
+                    )}
+                    {index < flow.steps.length - 1 ? (
+                      <button
+                        type="button"
+                        class="step-dialog-go is-next"
+                        data-step-go={`step-dialog-${index + 1}`}
+                        aria-label={`${flow.next}: ${flow.steps[index + 1].title}`}
+                        title={flow.steps[index + 1].title}
+                      >
+                        <span aria-hidden="true">
+                          {flow.next}: {flow.steps[index + 1].short}
+                        </span>
+                        <svg
+                          class="step-dialog-next-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                          set:html={stepIcons[flow.steps[index + 1].icon]}
+                        />
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              </dialog>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
   <section class="section" id="about">
     <div class="wrap">
       <div class="section-head">
@@ -166,61 +293,47 @@ const posts = await getSubstackPosts(locale);
       </div>
       <h2>{t.about.title}</h2>
       <div class="about-grid">
-      <div class="copy">
-        {t.about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-      </div>
-      <dl class="facts">
-        {
-          t.about.facts.map((fact) => (
-            <div>
-              <dt>{fact.k}</dt>
-              <dd>
-                {fact.live ? (
-                  <span class="store-status">
-                    {fact.v}
-                    <span class="pulse" aria-hidden="true" />
-                  </span>
-                ) : (
-                  fact.v
-                )}
-              </dd>
-            </div>
-          ))
-        }
-      </dl>
-      </div>
-      <div class="process">
-        <p class="section-label">{t.about.processLabel}</p>
-        <ol>
-          {
-            t.about.steps.map((step, index) => (
-              <li>
-                <span class="step-n">{String(index + 1).padStart(2, '0')}</span>
-                <h3>
-                  <span aria-hidden="true">{step.emoji}</span> {step.title}
-                </h3>
-              </li>
-            ))
-          }
-        </ol>
-      </div>
-      <div class="about-photos">
-        <figure>
-          <Image
-            src={aboutOne}
-            alt={t.hero.photo}
-            widths={[480, 720, 960]}
-            sizes="(min-width: 800px) 34rem, 50vw"
-          />
-        </figure>
-        <figure>
-          <Image
-            src={aboutTwo}
-            alt={t.hero.photo}
-            widths={[480, 720, 960]}
-            sizes="(min-width: 800px) 34rem, 50vw"
-          />
-        </figure>
+        <div>
+          <div class="copy">
+            {t.about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+          </div>
+          <dl class="facts">
+            {
+              t.about.facts.map((fact) => (
+                <div>
+                  <dt>{fact.k}</dt>
+                  <dd>
+                    {fact.live ? (
+                      <span class="store-status">
+                        {fact.v}
+                        <span class="pulse" aria-hidden="true" />
+                      </span>
+                    ) : (
+                      fact.v
+                    )}
+                  </dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+        <div class="about-photos">
+          <figure>
+            <Image
+              src={aboutOne}
+              alt={t.hero.photo}
+              widths={[480, 720, 960]}
+              sizes="(min-width: 800px) 24rem, 100vw"
+            />
+            <Image
+              class="photo-alt"
+              src={aboutTwo}
+              alt=""
+              widths={[480, 720, 960]}
+              sizes="(min-width: 800px) 24rem, 100vw"
+            />
+          </figure>
+        </div>
       </div>
     </div>
   </section>
@@ -245,9 +358,6 @@ const posts = await getSubstackPosts(locale);
               <span aria-hidden="true">↗</span>
             </a>
           </div>
-        </div>
-        <div>
-          <p class="section-label">{t.journal.essays}</p>
           <div data-essays data-locale={locale} data-feed={substackFeedUrl}>
             {
               posts.length === 0 ? (
@@ -257,9 +367,16 @@ const posts = await getSubstackPosts(locale);
                   {posts.map((post) => (
                     <li>
                       <a class="post" href={post.href} rel="noopener" target="_blank">
-                        {post.date ? <time>{post.date}</time> : null}
-                        <h3>{post.title}</h3>
-                        {post.excerpt ? <p>{post.excerpt}</p> : null}
+                        {post.image ? (
+                          <span class="post-cover">
+                            <img src={post.image} alt="" loading="lazy" decoding="async" />
+                          </span>
+                        ) : null}
+                        <span class="post-copy">
+                          {post.date ? <time>{post.date}</time> : null}
+                          <h3>{post.title}</h3>
+                          {post.excerpt ? <p>{post.excerpt}</p> : null}
+                        </span>
                       </a>
                     </li>
                   ))}
@@ -293,6 +410,8 @@ const posts = await getSubstackPosts(locale);
 </Base>
 
 <script>
+  import { coverOf } from '../lib/posts';
+
   function bindTypewriter() {
     const el = document.querySelector('[data-typewriter]');
     const text = el?.querySelector('[data-type-text]');
@@ -406,7 +525,14 @@ const posts = await getSubstackPosts(locale);
       if (!response.ok || !root.isConnected) return;
       const data = (await response.json()) as {
         status?: string;
-        items?: Array<{ title?: string; link?: string; description?: string; pubDate?: string }>;
+        items?: Array<{
+          title?: string;
+          link?: string;
+          description?: string;
+          pubDate?: string;
+          thumbnail?: string;
+          enclosure?: { link?: string };
+        }>;
       };
       if (data.status !== 'ok' || !Array.isArray(data.items) || !root.isConnected) return;
 
@@ -428,6 +554,7 @@ const posts = await getSubstackPosts(locale);
             href,
             excerpt: short === title ? '' : short,
             date: Number.isNaN(when.getTime()) ? '' : format.format(when),
+            image: coverOf(item.thumbnail || item.enclosure?.link || ''),
           },
         ];
       });
@@ -446,19 +573,33 @@ const posts = await getSubstackPosts(locale);
         link.href = post.href;
         link.target = '_blank';
         link.rel = 'noopener';
+        if (post.image) {
+          const cover = document.createElement('span');
+          cover.className = 'post-cover';
+          const image = document.createElement('img');
+          image.src = post.image;
+          image.alt = '';
+          image.loading = 'lazy';
+          image.decoding = 'async';
+          cover.append(image);
+          link.append(cover);
+        }
+        const body = document.createElement('span');
+        body.className = 'post-copy';
         if (post.date) {
           const time = document.createElement('time');
           time.textContent = post.date;
-          link.append(time);
+          body.append(time);
         }
         const heading = document.createElement('h3');
         heading.textContent = post.title;
-        link.append(heading);
+        body.append(heading);
         if (post.excerpt) {
           const copy = document.createElement('p');
           copy.textContent = post.excerpt;
-          link.append(copy);
+          body.append(copy);
         }
+        link.append(body);
         item.append(link);
         list.append(item);
       }
@@ -468,12 +609,37 @@ const posts = await getSubstackPosts(locale);
     }
   }
 
+  function bindSteps() {
+    document.querySelectorAll<HTMLButtonElement>('[data-step-open]').forEach((button) => {
+      if (button.dataset.bound === 'true') return;
+      const dialog = document.getElementById(button.dataset.stepOpen ?? '');
+      if (!(dialog instanceof HTMLDialogElement)) return;
+      button.dataset.bound = 'true';
+      button.addEventListener('click', () => dialog.showModal());
+      dialog.querySelector('[data-step-close]')?.addEventListener('click', () => dialog.close());
+      // A click on the backdrop lands on the dialog itself, outside its inner panel.
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+      dialog.querySelectorAll<HTMLButtonElement>('[data-step-go]').forEach((go) => {
+        go.addEventListener('click', () => {
+          const target = document.getElementById(go.dataset.stepGo ?? '');
+          if (!(target instanceof HTMLDialogElement)) return;
+          dialog.close();
+          target.showModal();
+        });
+      });
+    });
+  }
+
   bindTypewriter();
   bindSdk();
   bindEssays();
+  bindSteps();
   document.addEventListener('astro:page-load', () => {
     bindTypewriter();
     bindSdk();
     bindEssays();
+    bindSteps();
   });
 </script>

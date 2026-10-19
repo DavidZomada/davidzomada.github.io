@@ -5,6 +5,7 @@ export interface PublicPost {
   href: string;
   date: string;
   excerpt: string;
+  image: string;
 }
 
 interface RawPost {
@@ -12,6 +13,7 @@ interface RawPost {
   href: string;
   excerpt: string;
   published: string;
+  image: string;
 }
 
 export const substackFeedUrl = 'https://davidzomada.substack.com/feed';
@@ -55,6 +57,16 @@ function excerptOf(value: string, title: string) {
   return `${text.slice(0, 177).trimEnd()}…`;
 }
 
+// Covers are full-size uploads; ask Substack's CDN for a card-sized copy.
+export function coverOf(value: string) {
+  const url = value.trim();
+  if (!url.startsWith('https://')) return '';
+  const nested = url.match(/\/(https%3A%2F%2F[^/?#]+)$/);
+  const original = nested ? decodeURIComponent(nested[1]) : url;
+  if (!original.startsWith('https://substack-post-media.s3.amazonaws.com/')) return url;
+  return `https://substackcdn.com/image/fetch/w_720,c_limit,f_auto,q_auto:good/${encodeURIComponent(original)}`;
+}
+
 function publishedAt(value: string) {
   const trimmed = value.trim();
   if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(trimmed)) {
@@ -70,6 +82,7 @@ function toPublic(post: RawPost, locale: Locale): PublicPost {
     title: post.title,
     href: post.href,
     excerpt: post.excerpt,
+    image: post.image,
     date: Number.isNaN(when.getTime()) ? '' : format.format(when),
   };
 }
@@ -96,6 +109,7 @@ function fromArchive(data: unknown): RawPost[] {
         description?: string;
         canonical_url?: string;
         post_date?: string;
+        cover_image?: string | null;
         restacked_post_id?: number | null;
       };
       if (post.restacked_post_id) return [];
@@ -107,6 +121,7 @@ function fromArchive(data: unknown): RawPost[] {
           href,
           excerpt: excerptOf(post.subtitle || post.description || '', title),
           published: post.post_date ?? '',
+          image: coverOf(post.cover_image ?? ''),
         },
       ];
     }),
@@ -126,6 +141,7 @@ function parseFeed(xml: string): RawPost[] {
           href: textOf(block, 'link'),
           excerpt: excerptOf(textOf(block, 'description'), title),
           published: textOf(block, 'pubDate'),
+          image: coverOf(block.match(/<enclosure[^>]*url="([^"]+)"/i)?.[1] ?? ''),
         };
       }),
   );
@@ -138,7 +154,14 @@ function fromProxy(data: unknown): RawPost[] {
   return takePosts(
     body.items.flatMap((item) => {
       if (!item || typeof item !== 'object') return [];
-      const post = item as { title?: string; link?: string; description?: string; pubDate?: string };
+      const post = item as {
+        title?: string;
+        link?: string;
+        description?: string;
+        pubDate?: string;
+        thumbnail?: string;
+        enclosure?: { link?: string };
+      };
       const title = (post.title ?? '').trim();
       return [
         {
@@ -146,6 +169,7 @@ function fromProxy(data: unknown): RawPost[] {
           href: post.link ?? '',
           excerpt: excerptOf(post.description ?? '', title),
           published: post.pubDate ?? '',
+          image: coverOf(post.thumbnail || post.enclosure?.link || ''),
         },
       ];
     }),

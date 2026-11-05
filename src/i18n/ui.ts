@@ -192,51 +192,58 @@ export const ui = {
         'Free-draw travel routes on the map',
         'Add notes, photos, and locations to each day',
         'View your trip timeline and maps',
-        'Explore the world using AI',
-        'Your data stays private unless you choose to share it',
+        'Your journal stays private: only you can see it',
       ],
       helpTitle: 'Need help?',
       help: 'If you have questions or wish to delete your account, contact us at:',
       privacyTitle: 'Privacy Policy',
       privacy: [
         {
-          title: '1. Data We Collect',
-          body: 'We may collect personal data such as your email, usage data, and geolocation when you use the app.',
+          title: '1. Who handles your data',
+          body: 'The controller is David Zomada, Somada’s independent developer. This policy explains what data the app handles, why, who it is shared with and what rights you have. Last updated: November 5, 2026.',
         },
         {
-          title: '2. Purpose of Data Use',
-          body: 'We use your data to provide personalized features, enhance functionality, ensure account security, and improve the app experience.',
+          title: '2. Data we collect',
+          body: '• Account: your email and how you sign in (email link, password, Apple or Google). With Apple or Google we receive the email and identifier they provide, never your password.\n• Your journal: pages, text, photos, icons, routes, stops and the places you collect, with their date and position on the map.\n• Location: only if you allow it, and only while you use the app.\n• Anonymous usage data: which features are used and technical data (app and OS version, device model). It is not linked to your account.\nWe do not collect data for advertising or track you across apps or websites.',
         },
         {
-          title: '3. Location Services',
-          body: 'We may request access to your location to enable features such as journaling with map routes. Location access is optional and requires your explicit permission.',
+          title: '3. Why we use it',
+          body: '• To provide the service: create your account, save and sync your journal across devices, show maps and search for places. Legal basis: providing the service you request by using the app.\n• To improve the app with anonymous usage data. Legal basis: our legitimate interest in knowing what works and what breaks, without identifying you.\nWe do not sell your data or use it for advertising.',
         },
         {
-          title: '4. Data Storage',
-          body: 'All data is stored securely in accordance with industry standards. We do not sell or share your data with third parties without your consent.',
+          title: '4. Location, photos and camera',
+          body: 'Somada asks for permission to use your location while you use the app, your photo library and the camera. All of them are optional: without them you can keep writing your journal. Only the photos you add to a page are uploaded. You can change these permissions at any time in iOS Settings.',
         },
         {
-          title: '5. Third-Party Services',
-          body: 'Some features may rely on third-party providers such as OpenAI (ChatGPT). These services have their own privacy policies and may process data according to their terms.',
+          title: '5. Where it is stored and for how long',
+          body: 'Your account and journal are stored on the servers of Supabase, our database provider, located in Singapore, and on your device so the app works offline. Your journal is private: other users cannot see it. As the developer, I only access your data when needed to give you support, fix a bug or comply with the law. We keep it while you have an account; when you delete it, it is removed from our servers, and backups are deleted in their usual cycle.',
         },
         {
-          title: '6. Your Rights',
-          body: 'You have the right to access, correct, or delete your personal information at any time. Contact us if you wish to exercise these rights.',
+          title: '6. Service providers',
+          body: 'Somada uses these services, which only receive what they need for their job:\n• Supabase: database, photos, sign-in and the sign-in email.\n• Mapbox: maps and place search. It receives what you search for, the map area you view and technical data; its SDK may send anonymous usage and location data to improve its maps.\n• Apple and Google: only if you choose to sign in with them.\n• Wikipedia and Wikidata: they receive a place’s name or position to show its information and photo.\n• TelemetryDeck: anonymous analytics. The device identifier is hashed on the device before it is sent, and it never receives your name, email, account, journal or location.\nYour data is stored outside the European Economic Area (Supabase, in Singapore) and some providers, such as Mapbox, process it in the US. These transfers use the safeguards the GDPR requires, such as the European Commission’s standard contractual clauses. Somada does not currently use any artificial intelligence services.',
         },
         {
-          title: '7. Account & Data Deletion',
-          body: 'You may delete your account and all related data directly from the app or by contacting us.',
+          title: '7. Your rights',
+          body: 'You can ask to access, correct or delete your data, restrict or object to its processing, and receive a copy in a commonly used format. Write to the contact email and we will reply within one month. If you think we have not handled your request properly, you can complain to the Spanish Data Protection Agency (aepd.es) or the authority in your country.',
         },
         {
-          title: '8. Contact',
-          body: 'For any privacy questions, contact us at:',
+          title: '8. Account deletion',
+          body: 'You can delete your account and all its data from the app’s settings (Delete account) or by writing to us. Deletion is permanent.',
+        },
+        {
+          title: '9. Changes',
+          body: 'If we change this policy, we will update the date in section 1 and say so in the app or on this page.',
+        },
+        {
+          title: '10. Contact',
+          body: 'For any privacy questions, write to us at:',
         },
       ],
       termsTitle: 'Terms & Conditions',
       terms: [
         {
           title: '1. Account & Access',
-          body: 'You must be at least 13 years old to create an account. You are responsible for maintaining the confidentiality of your login credentials and for any activity under your account.',
+          body: 'You must be at least 14 years old to create an account. You are responsible for maintaining the confidentiality of your login credentials and for any activity under your account.',
         },
         {
           title: '2. Private Content',
@@ -247,8 +254,8 @@ export const ui = {
           body: 'Some features require a paid subscription. Payments are processed via the App Store, and auto-renewal can be managed through your account settings.',
         },
         {
-          title: '4. Personal Data & Location',
-          body: 'We collect personal and location data to enhance your experience. This includes authentication data, usage statistics, and geolocation. Data is stored securely and never sold to third parties.',
+          title: '4. Personal Data',
+          body: 'How we handle your data is explained in the Privacy Policy. We never sell your data or use it for advertising.',
         },
         {
           title: '5. Apple Platform Policies',
@@ -259,27 +266,23 @@ export const ui = {
           body: 'We are not liable for any indirect or incidental damages resulting from the use of the app. Use the service at your own risk.',
         },
         {
-          title: '7. AI Content Disclaimer',
-          body: 'Some features use OpenAI’s ChatGPT via API. While we aim to provide helpful and accurate content, the AI may occasionally produce incorrect or misleading information.',
-        },
-        {
-          title: '8. Prohibited Conduct',
+          title: '7. Prohibited Conduct',
           body: 'You agree not to misuse the app, reverse engineer its functions, or store any illegal, harmful or abusive content.',
         },
         {
-          title: '9. Account Deletion',
+          title: '8. Account Deletion',
           body: 'You may request to delete your account and data at any time via the app or by contacting us. Upon confirmation, your data will be permanently removed in compliance with privacy regulations.',
         },
         {
-          title: '10. Contact',
+          title: '9. Contact',
           body: 'For any questions about these terms, contact us at:',
         },
         {
-          title: '11. Changes to Terms',
+          title: '10. Changes to Terms',
           body: 'We may update these terms from time to time. Continued use of the app constitutes your acceptance of any changes.',
         },
         {
-          title: '12. Governing Law',
+          title: '11. Governing Law',
           body: 'These terms are governed by the laws of the country in which you reside.',
         },
       ],
@@ -480,43 +483,50 @@ export const ui = {
         'Dibuja a mano las rutas del viaje sobre el mapa',
         'Añade notas, fotos y lugares a cada día',
         'Consulta la cronología y los mapas del viaje',
-        'Explora el mundo con IA',
-        'Tus datos siguen siendo privados salvo que decidas compartirlos',
+        'Tu diario es privado: solo lo ves tú',
       ],
       helpTitle: '¿Necesitas ayuda?',
       help: 'Si tienes preguntas o quieres eliminar tu cuenta, escríbenos a:',
       privacyTitle: 'Política de privacidad',
       privacy: [
         {
-          title: '1. Datos que recogemos',
-          body: 'Podemos recoger datos personales como tu email, datos de uso y geolocalización cuando usas la app.',
+          title: '1. Quién trata tus datos',
+          body: 'El responsable es David Zomada, desarrollador independiente de Somada. Esta política explica qué datos trata la app, para qué, con quién se comparten y qué derechos tienes. Última actualización: 5 de noviembre de 2026.',
         },
         {
-          title: '2. Finalidad del uso de los datos',
-          body: 'Usamos tus datos para ofrecer funciones personalizadas, mejorar el funcionamiento, proteger la cuenta y mejorar la experiencia de la app.',
+          title: '2. Datos que recogemos',
+          body: '• Cuenta: tu email y el método con el que entras (enlace por email, contraseña, Apple o Google). Con Apple o Google recibimos el email y el identificador que nos dan, nunca tu contraseña.\n• Tu diario: páginas, textos, fotos, iconos, rutas, paradas y los lugares que coleccionas, con su fecha y su posición en el mapa.\n• Ubicación: solo si das permiso y mientras usas la app.\n• Datos de uso anónimos: qué funciones se usan y datos técnicos (versión de la app y del sistema, modelo del dispositivo). No se asocian a tu cuenta.\nNo recogemos datos para publicidad ni te seguimos entre apps o webs.',
         },
         {
-          title: '3. Servicios de localización',
-          body: 'Podemos pedir acceso a tu ubicación para funciones como el diario con rutas en el mapa. El acceso a la ubicación es opcional y requiere tu permiso explícito.',
+          title: '3. Para qué los usamos',
+          body: '• Para darte el servicio: crear tu cuenta, guardar y sincronizar tu diario entre dispositivos, mostrar mapas y buscar lugares. Base legal: la prestación del servicio que pides al usar la app.\n• Para mejorar la app con datos de uso anónimos. Base legal: nuestro interés legítimo en saber qué funciona y qué falla, sin identificarte.\nNo vendemos tus datos ni los usamos para publicidad.',
         },
         {
-          title: '4. Almacenamiento de datos',
-          body: 'Todos los datos se almacenan de forma segura conforme a los estándares del sector. No vendemos ni compartimos tus datos con terceros sin tu consentimiento.',
+          title: '4. Ubicación, fotos y cámara',
+          body: 'Somada te pide permiso para usar tu ubicación mientras usas la app, tu fototeca y la cámara. Todo es opcional: sin esos permisos puedes seguir escribiendo tu diario. Solo se suben las fotos que añades a una página. Puedes cambiar los permisos cuando quieras en los Ajustes de iOS.',
         },
         {
-          title: '5. Servicios de terceros',
-          body: 'Algunas funciones pueden depender de proveedores externos como OpenAI (ChatGPT). Esos servicios tienen sus propias políticas de privacidad y pueden tratar los datos según sus términos.',
+          title: '5. Dónde se guardan y cuánto tiempo',
+          body: 'Tu cuenta y tu diario se guardan en los servidores de Supabase, nuestro proveedor de base de datos, situados en Singapur, y en tu dispositivo para que la app funcione sin conexión. Tu diario es privado: otros usuarios no pueden verlo. Como desarrollador, solo accedo a tus datos cuando hace falta para darte soporte, corregir un error o cumplir la ley. Los conservamos mientras tengas la cuenta; al borrarla se eliminan de nuestros servidores, y las copias de seguridad se borran en su ciclo habitual.',
         },
         {
-          title: '6. Tus derechos',
-          body: 'Tienes derecho a acceder, corregir o eliminar tu información personal en cualquier momento. Escríbenos si quieres ejercer esos derechos.',
+          title: '6. Proveedores',
+          body: 'Somada usa estos servicios, que solo reciben lo necesario para su función:\n• Supabase: base de datos, fotos, inicio de sesión y envío del email de acceso.\n• Mapbox: mapas y búsqueda de lugares. Recibe lo que buscas, la zona del mapa que ves y datos técnicos; su SDK puede enviar datos de uso y de ubicación anónimos para mejorar sus mapas.\n• Apple y Google: solo si eliges iniciar sesión con ellos.\n• Wikipedia y Wikidata: reciben el nombre o la posición de un lugar para mostrar su información y su foto.\n• TelemetryDeck: analítica anónima. El identificador del dispositivo se cifra en el propio dispositivo antes de enviarse, y no recibe tu nombre, email, cuenta, diario ni ubicación.\nTus datos se guardan fuera del Espacio Económico Europeo (Supabase, en Singapur) y algunos proveedores, como Mapbox, los tratan en EE. UU. Estas transferencias se hacen con las garantías que exige el RGPD, como las cláusulas contractuales tipo de la Comisión Europea. Somada no usa ahora mismo servicios de inteligencia artificial.',
         },
         {
-          title: '7. Eliminación de la cuenta y los datos',
-          body: 'Puedes eliminar tu cuenta y todos los datos relacionados desde la app o escribiéndonos.',
+          title: '7. Tus derechos',
+          body: 'Puedes pedir acceso a tus datos, corregirlos, borrarlos, limitar su tratamiento u oponerte a él, y recibir una copia en un formato de uso común. Escríbenos al email de contacto y te responderemos en un plazo máximo de un mes. Si crees que no hemos atendido bien tu solicitud, puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es) o la autoridad de tu país.',
         },
         {
-          title: '8. Contacto',
+          title: '8. Eliminación de la cuenta',
+          body: 'Puedes borrar tu cuenta y todos sus datos desde los ajustes de la app (Eliminar cuenta) o escribiéndonos. El borrado es definitivo.',
+        },
+        {
+          title: '9. Cambios',
+          body: 'Si cambiamos esta política, actualizaremos la fecha del apartado 1 y lo indicaremos en la app o en esta página.',
+        },
+        {
+          title: '10. Contacto',
           body: 'Para cualquier pregunta sobre privacidad, escríbenos a:',
         },
       ],
@@ -524,7 +534,7 @@ export const ui = {
       terms: [
         {
           title: '1. Cuenta y acceso',
-          body: 'Debes tener al menos 13 años para crear una cuenta. Eres responsable de mantener la confidencialidad de tus credenciales y de cualquier actividad en tu cuenta.',
+          body: 'Debes tener al menos 14 años para crear una cuenta. Eres responsable de mantener la confidencialidad de tus credenciales y de cualquier actividad en tu cuenta.',
         },
         {
           title: '2. Contenido privado',
@@ -535,8 +545,8 @@ export const ui = {
           body: 'Algunas funciones requieren una suscripción de pago. Los pagos se procesan a través del App Store, y la renovación automática se gestiona desde los ajustes de tu cuenta.',
         },
         {
-          title: '4. Datos personales y ubicación',
-          body: 'Recogemos datos personales y de ubicación para mejorar tu experiencia. Esto incluye datos de autenticación, estadísticas de uso y geolocalización. Los datos se almacenan de forma segura y nunca se venden a terceros.',
+          title: '4. Datos personales',
+          body: 'Cómo tratamos tus datos se explica en la Política de privacidad. No vendemos tus datos ni los usamos para publicidad.',
         },
         {
           title: '5. Políticas de la plataforma de Apple',
@@ -547,27 +557,23 @@ export const ui = {
           body: 'No somos responsables de daños indirectos o incidentales derivados del uso de la app. Usas el servicio bajo tu propia responsabilidad.',
         },
         {
-          title: '7. Aviso sobre el contenido de IA',
-          body: 'Algunas funciones usan ChatGPT de OpenAI a través de su API. Aunque buscamos ofrecer contenido útil y preciso, la IA puede producir en ocasiones información incorrecta o engañosa.',
-        },
-        {
-          title: '8. Conducta prohibida',
+          title: '7. Conducta prohibida',
           body: 'Te comprometes a no hacer un uso indebido de la app, a no aplicar ingeniería inversa a sus funciones y a no guardar contenido ilegal, dañino o abusivo.',
         },
         {
-          title: '9. Eliminación de la cuenta',
+          title: '8. Eliminación de la cuenta',
           body: 'Puedes solicitar la eliminación de tu cuenta y tus datos en cualquier momento desde la app o escribiéndonos. Tras la confirmación, tus datos se eliminarán de forma permanente conforme a la normativa de privacidad.',
         },
         {
-          title: '10. Contacto',
+          title: '9. Contacto',
           body: 'Para cualquier pregunta sobre estos términos, escríbenos a:',
         },
         {
-          title: '11. Cambios en los términos',
+          title: '10. Cambios en los términos',
           body: 'Podemos actualizar estos términos de vez en cuando. Seguir usando la app supone que aceptas los cambios.',
         },
         {
-          title: '12. Ley aplicable',
+          title: '11. Ley aplicable',
           body: 'Estos términos se rigen por las leyes del país en el que resides.',
         },
       ],

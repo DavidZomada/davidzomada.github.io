@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <link rel="icon" href="/favicon.svg">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,500,1,0&icon_names=agriculture,airport_shuttle,chevron_left,chevron_right,directions_bike,directions_boat,directions_bus,directions_car,electric_scooter,fit_screen,flight,hiking,local_shipping,moped,paragliding,sailing,scuba_diving,surfing,tram,train,two_wheeler&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,500,1,0&icon_names=agriculture,airport_shuttle,chevron_left,chevron_right,directions_bike,directions_boat,directions_bus,directions_car,electric_scooter,fit_screen,flight,hiking,layers,local_shipping,moped,paragliding,sailing,scuba_diving,surfing,tram,train,two_wheeler&display=block">
 <style>
   :root {
     --bg: #F2F2F7;
@@ -55,6 +55,23 @@
     -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); cursor: pointer;
   }
   .map-button .icon { font-size: 22px; }
+  .map-button.styles { top: calc(max(12px, env(safe-area-inset-top)) + 50px); }
+  .style-menu {
+    position: absolute; right: 12px; top: calc(max(12px, env(safe-area-inset-top)) + 98px); z-index: 4;
+    display: flex; flex-direction: column; gap: 2px; padding: 6px; border-radius: 18px; min-width: 160px;
+    background: var(--glass); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  }
+  .style-menu[hidden] { display: none; }
+  .style-menu button {
+    border: 0; background: transparent; color: var(--text); font: 600 15px/1 inherit; text-align: left;
+    padding: 10px 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer;
+  }
+  .style-menu button[aria-checked="true"] { background: var(--sep); }
+  .style-menu .swatch { width: 26px; height: 26px; border-radius: 8px; flex: none; border: 1px solid var(--sep); }
+  .swatch.standard { background: linear-gradient(135deg, #cfe8c4 0 45%, #a9d3f2 45% 100%); }
+  .swatch.monochrome { background: linear-gradient(135deg, #e6e6e6 0 45%, #b9b9b9 45% 100%); }
+  .swatch.satellite { background: linear-gradient(135deg, #4f6b3a 0 45%, #1f4a6b 45% 100%); }
 
   main { position: relative; z-index: 2; max-width: 680px; margin: -26px auto 0; padding: 0 16px 120px; }
   header.trip { padding: 2px 4px 12px; }
@@ -199,6 +216,8 @@ const L = isSpanish ? {
   next: "Siguiente",
   newPages: n => n === 1 ? "1 página nueva" : `${n} páginas nuevas`,
   overview: "Ver toda la ruta",
+  mapStyle: "Estilo del mapa",
+  styles: { standard: "Estándar", monochrome: "Monocromo", satellite: "Satélite" },
 } : {
   notFound: "This link doesn't exist or is no longer shared.",
   failed: "The trip couldn't be loaded. Check your connection.",
@@ -214,6 +233,8 @@ const L = isSpanish ? {
   next: "Next",
   newPages: n => n === 1 ? "1 new page" : `${n} new pages`,
   overview: "Show the whole route",
+  mapStyle: "Map style",
+  styles: { standard: "Standard", monochrome: "Monochrome", satellite: "Satellite" },
 };
 document.documentElement.lang = isSpanish ? "es" : "en";
 
@@ -505,24 +526,38 @@ let lastTrip = null;
 let selectedId = null;
 let didFit = false;
 
+const MAP_STYLES = ["standard", "monochrome", "satellite"];
+let mapStyle = (() => { try { return localStorage.getItem("somada.mapStyle"); } catch { return null; } })();
+if (!MAP_STYLES.includes(mapStyle)) mapStyle = "standard";
+
+/// The same three styles as the app, with its label choices: no road or transit labels.
+function styleFor(name) {
+  const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const basemap = {
+    lightPreset: dark ? "night" : "day",
+    showPointOfInterestLabels: true,
+    showTransitLabels: false,
+    showPlaceLabels: true,
+    showRoadLabels: false,
+  };
+  if (name === "satellite") {
+    return { url: "mapbox://styles/mapbox/standard-satellite", config: { basemap } };
+  }
+  return {
+    url: "mapbox://styles/mapbox/standard",
+    config: { basemap: { ...basemap, theme: name === "monochrome" ? "monochrome" : "default",
+      showPedestrianRoads: false, show3dObjects: true } },
+  };
+}
+
 function setupMap() {
   if (!window.mapboxgl || !mapboxToken || mapboxToken.startsWith("__")) { $("map").hidden = true; return; }
   mapboxgl.accessToken = mapboxToken;
-  const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const initial = styleFor(mapStyle);
   map = new mapboxgl.Map({
     container: "map",
-    style: "mapbox://styles/mapbox/standard",
-    config: {
-      basemap: {
-        lightPreset: dark ? "night" : "day",
-        showPointOfInterestLabels: true,
-        showTransitLabels: false,
-        showPlaceLabels: true,
-        showRoadLabels: false,
-        showPedestrianRoads: false,
-        show3dObjects: true,
-      },
-    },
+    style: initial.url,
+    config: initial.config,
     center: [-3.7, 40.4],
     zoom: 3,
     attributionControl: true,
@@ -531,9 +566,35 @@ function setupMap() {
   const overview = el("button", { class: "map-button", type: "button", title: L.overview, "aria-label": L.overview },
     [el("span", { class: "icon", text: "fit_screen", "aria-hidden": "true" })]);
   overview.addEventListener("click", () => fitRoute(true));
-  $("map").append(overview);
-  map.on("load", () => { mapReady = true; if (lastTrip) drawTrip(lastTrip); });
+  $("map").append(overview, ...styleControls());
+  // A new style drops the route's layers: draw them again once it has loaded.
+  map.on("style.load", () => { mapReady = true; if (lastTrip) drawTrip(lastTrip); });
   map.on("zoom", updateVehicleVisibility);
+  map.on("click", () => { $("style-menu").hidden = true; });
+}
+
+function styleControls() {
+  const button = el("button", { class: "map-button styles", type: "button", title: L.mapStyle, "aria-label": L.mapStyle,
+    "aria-haspopup": "menu" }, [el("span", { class: "icon", text: "layers", "aria-hidden": "true" })]);
+  const menu = el("div", { class: "style-menu", id: "style-menu", role: "menu", hidden: "" });
+  for (const name of MAP_STYLES) {
+    const option = el("button", { type: "button", role: "menuitemradio", "aria-checked": String(name === mapStyle), "data-style": name },
+      [el("span", { class: `swatch ${name}`, "aria-hidden": "true" }), el("span", { text: L.styles[name] })]);
+    option.addEventListener("click", () => { menu.hidden = true; setMapStyle(name); });
+    menu.append(option);
+  }
+  button.addEventListener("click", event => { event.stopPropagation(); menu.hidden = !menu.hidden; });
+  return [button, menu];
+}
+
+function setMapStyle(name) {
+  if (name === mapStyle || !map) return;
+  mapStyle = name;
+  try { localStorage.setItem("somada.mapStyle", name); } catch {}
+  document.querySelectorAll("#style-menu button").forEach(b => b.setAttribute("aria-checked", String(b.dataset.style === name)));
+  const style = styleFor(name);
+  mapReady = false;
+  map.setStyle(style.url, { config: style.config });
 }
 
 function routeCoordinates(trip) {

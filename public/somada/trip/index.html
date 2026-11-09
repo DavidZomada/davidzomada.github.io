@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="apple-itunes-app" content="app-id=6740721557">
+<meta name="theme-color" content="#FFBC2D">
+<title>Somada · Viaje</title>
+<meta property="og:title" content="Sigue mi viaje en Somada">
+<meta property="og:description" content="La ruta y el diario del viaje, día a día.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/favicon.svg">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F2F2F7;
+    --card: #FFFFFF;
+    --text: #1C1C1E;
+    --text-2: #6C6C70;
+    --sep: rgba(60, 60, 67, 0.18);
+    --accent: #FFBC2D;
+    --route: #FFBC2D;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --card: #1C1C1E;
+      --text: #F2F2F7;
+      --text-2: #A1A1A6;
+      --sep: rgba(84, 84, 88, 0.6);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); }
+  body {
+    font: 17px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .rounded { font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif; }
+  #map { position: relative; height: 46vh; min-height: 260px; width: 100%; z-index: 1; background: var(--bg); }
+  main { position: relative; z-index: 2; max-width: 680px; margin: -22px auto 0; padding: 0 16px 48px; }
+  header.trip {
+    background: var(--card); border-radius: 26px; padding: 18px 20px; margin-bottom: 16px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  }
+  header.trip h1 { margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; }
+  header.trip .meta { margin-top: 6px; color: var(--text-2); font-size: 15px; }
+  .live { display: inline-flex; align-items: center; gap: 6px; }
+  .live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #30D158; }
+  article.page { background: var(--card); border-radius: 22px; overflow: hidden; margin-bottom: 16px; }
+  article.page > .cover { display: block; width: 100%; max-height: 420px; object-fit: cover; background: var(--sep); }
+  article.page .body { padding: 16px 20px 20px; }
+  article.page .head { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+  article.page .badge {
+    flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 22px; background: var(--route);
+  }
+  article.page h2 { margin: 0; font-size: 21px; line-height: 1.2; font-weight: 700; }
+  article.page .sub { color: var(--text-2); font-size: 15px; margin-top: 2px; }
+  .content { margin-top: 12px; overflow-wrap: anywhere; }
+  .content p { margin: 0 0 0.6em; white-space: pre-wrap; }
+  .content p:empty { display: none; }
+  .content img { display: block; width: 100%; height: auto; border-radius: 14px; margin: 10px 0; background: var(--sep); }
+  .empty, .error { text-align: center; color: var(--text-2); padding: 48px 16px; }
+  footer { text-align: center; color: var(--text-2); font-size: 14px; padding: 8px 16px 40px; }
+  footer a { color: inherit; font-weight: 600; }
+  .marker {
+    width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 16px;
+    background: #fff; border: 3px solid var(--route); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); cursor: pointer;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 3px solid var(--route); }
+  .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right { bottom: 22px; }
+</style>
+</head>
+<body>
+<div id="map" aria-hidden="true"></div>
+<main>
+  <header class="trip" id="header" hidden>
+    <h1 class="rounded" id="title"></h1>
+    <div class="meta" id="meta"></div>
+  </header>
+  <div id="pages"></div>
+  <div class="error" id="error" hidden></div>
+</main>
+<footer id="footer"></footer>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js"></script>
+<script>
+"use strict";
+
+// Public configuration: the anon key only reaches what RLS and get_shared_trip allow, and the
+// Mapbox token is a public one restricted to this site's URLs.
+const PRODUCTION = {
+  supabaseURL: "https://rtwnsdxofdrssbmggbyj.supabase.co",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0d25zZHhvZmRyc3NibWdnYnlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0NDEyOTQsImV4cCI6MjA2NTAxNzI5NH0.5vw4L6jYnkxab3h2iyTTt4MiVigrh0agq5wa2WgvieA",
+};
+const LOCAL = {
+  supabaseURL: "http://127.0.0.1:54321",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0",
+};
+const MAPBOX_TOKEN = "__MAPBOX_TOKEN__";
+const PHOTOS_BASE = PRODUCTION.supabaseURL + "/storage/v1/object/public/page-photos/";
+const APP_STORE_URL = "https://apps.apple.com/app/id6740721557";
+const REFRESH_MS = 60 * 1000;
+
+const params = new URLSearchParams(location.search);
+const isLocalHost = ["localhost", "127.0.0.1"].includes(location.hostname);
+const env = isLocalHost && params.get("env") === "local" ? LOCAL : PRODUCTION;
+const mapboxToken = (isLocalHost && params.get("mapbox_token")) || MAPBOX_TOKEN;
+const token = params.get("t") || location.hash.slice(1);
+
+const isSpanish = (navigator.language || "es").toLowerCase().startsWith("es");
+const L = isSpanish ? {
+  notFound: "Este enlace no existe o se ha dejado de compartir.",
+  failed: "No se ha podido cargar el viaje. Comprueba la conexión.",
+  noPages: "Todavía no hay páginas en este viaje.",
+  pages: n => n === 1 ? "1 página" : `${n} páginas`,
+  stops: n => n === 1 ? "1 parada" : `${n} paradas`,
+  updated: "Actualizado",
+  live: "Se actualiza solo",
+  footer: "Diario de viaje hecho con",
+  get: "Descarga Somada",
+  trip: "Viaje",
+} : {
+  notFound: "This link doesn't exist or is no longer shared.",
+  failed: "The trip couldn't be loaded. Check your connection.",
+  noPages: "No pages in this trip yet.",
+  pages: n => n === 1 ? "1 page" : `${n} pages`,
+  stops: n => n === 1 ? "1 stop" : `${n} stops`,
+  updated: "Updated",
+  live: "Updates by itself",
+  footer: "Travel journal made with",
+  get: "Get Somada",
+  trip: "Trip",
+};
+document.documentElement.lang = isSpanish ? "es" : "en";
+
+const $ = id => document.getElementById(id);
+function el(tag, attrs = {}, children = []) {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(attrs)) {
+    if (value == null) continue;
+    if (key === "text") node.textContent = value;
+    else if (key === "class") node.className = value;
+    else node.setAttribute(key, value);
+  }
+  for (const child of children) if (child) node.append(child);
+  return node;
+}
+
+// MARK: - Page content (serialized RTFD from NSAttributedString)
+
+function base64ToBytes(b64) {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
+// NSFileWrapper's flat format: "rtfd", 0, 3, count, (length, name) × count,
+// blob length × count, then each blob as (1, length, bytes).
+function parseRTFD(bytes) {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const latin1 = new TextDecoder("latin1");
+  if (latin1.decode(bytes.subarray(0, 4)) !== "rtfd") return null;
+  let offset = 12;
+  const u32 = () => { const v = view.getUint32(offset, true); offset += 4; return v; };
+  const count = u32();
+  const names = [];
+  for (let i = 0; i < count; i++) {
+    const length = u32();
+    names.push(new TextDecoder().decode(bytes.subarray(offset, offset + length)));
+    offset += length;
+  }
+  const lengths = [];
+  for (let i = 0; i < count; i++) lengths.push(u32());
+  const files = {};
+  for (let i = 0; i < count; i++) {
+    let blob = bytes.subarray(offset, offset + lengths[i]);
+    offset += lengths[i];
+    if (blob.length >= 8) {
+      const inner = new DataView(blob.buffer, blob.byteOffset, 8);
+      if (inner.getUint32(0, true) === 1 && inner.getUint32(4, true) === blob.length - 8) blob = blob.subarray(8);
+    }
+    files[names[i]] = blob;
+  }
+  return files;
+}
+
+const CP1252 = { 0x80: 8364, 0x82: 8218, 0x83: 402, 0x84: 8222, 0x85: 8230, 0x86: 8224, 0x87: 8225, 0x88: 710,
+  0x89: 8240, 0x8A: 352, 0x8B: 8249, 0x8C: 338, 0x8E: 381, 0x91: 8216, 0x92: 8217, 0x93: 8220, 0x94: 8221,
+  0x95: 8226, 0x96: 8211, 0x97: 8212, 0x98: 732, 0x99: 8482, 0x9A: 353, 0x9B: 8250, 0x9C: 339, 0x9E: 382, 0x9F: 376 };
+const cp1252 = code => String.fromCharCode(CP1252[code] || code);
+
+const SKIPPED_DESTINATIONS = new Set(["fonttbl", "colortbl", "expandedcolortbl", "stylesheet", "info", "listtable",
+  "listoverridetable", "pict", "header", "footer", "generator", "filetbl", "revtbl"]);
+
+// A small reader for the RTF Cocoa writes: paragraphs, bold, italic, underline, relative font
+// size and photo attachments. Returns a list of paragraphs, each a list of runs or photos.
+function parseRTF(rtf) {
+  const fonts = {};
+  const fontTable = rtf.match(/\{\\fonttbl(.*?)\}\s*\n/s);
+  if (fontTable) {
+    for (const [, index, name] of fontTable[1].matchAll(/\\f(\d+)[^ ;]*\s+([^;]*);/g)) {
+      fonts[index] = { bold: /bold|black|heavy|semibold/i.test(name), italic: /italic|oblique/i.test(name) };
+    }
+  }
+
+  const paragraphs = [[]];
+  const stack = [];
+  let state = { b: false, i: false, ul: false, f: "0", fs: 24, skip: false, uc: 1, graphic: false };
+  let text = "";
+  let pendingSkip = 0;
+  let afterGraphic = false;
+  const sizes = {};
+
+  const flush = () => {
+    if (!text) return;
+    const font = fonts[state.f] || {};
+    paragraphs[paragraphs.length - 1].push({
+      text, bold: state.b || font.bold, italic: state.i || font.italic, underline: state.ul, size: state.fs,
+    });
+    sizes[state.fs] = (sizes[state.fs] || 0) + text.length;
+    text = "";
+  };
+  const emit = chars => {
+    if (state.skip) return;
+    if (pendingSkip > 0) { pendingSkip -= 1; return; }
+    if (afterGraphic) { afterGraphic = false; if (chars === "¬" || chars === "￼") return; }
+    text += chars;
+  };
+  const newParagraph = () => { if (state.skip) return; flush(); paragraphs.push([]); };
+
+  let i = 0;
+  while (i < rtf.length) {
+    const c = rtf[i];
+    if (c === "{") {
+      flush();
+      stack.push(state);
+      state = { ...state, graphic: false };
+      i++;
+      if (rtf.startsWith("\\*", i)) { state.skip = true; i += 2; }
+    } else if (c === "}") {
+      flush();
+      const wasGraphic = state.graphic;
+      state = stack.pop() || state;
+      if (wasGraphic) afterGraphic = true;
+      i++;
+    } else if (c === "\\") {
+      const next = rtf[i + 1];
+      if (next === "\n" || next === "\r") { newParagraph(); i += 2; continue; }
+      if (next === "'") { emit(cp1252(parseInt(rtf.substr(i + 2, 2), 16))); i += 4; continue; }
+      if ("\\{}".includes(next)) { emit(next); i += 2; continue; }
+      if (next === "~") { emit(" "); i += 2; continue; }
+      if (next === "-" || next === "_" || next === ":") { i += 2; continue; }
+      const match = /^\\([a-zA-Z]+)(-?\d+)? ?/.exec(rtf.slice(i, i + 40));
+      if (!match) { i += 2; continue; }
+      i += match[0].length;
+      const [, word, arg] = match;
+      const n = arg === undefined ? null : parseInt(arg, 10);
+      if (SKIPPED_DESTINATIONS.has(word)) { state.skip = true; continue; }
+      if (word === "NeXTGraphic") {
+        // {{\NeXTGraphic name \width0 ... }<attachment char>}
+        const end = rtf.indexOf("\\", i);
+        const name = rtf.slice(i, end).trim();
+        if (!state.skip) { flush(); paragraphs[paragraphs.length - 1].push({ photo: name }); }
+        state.skip = true;
+        state.graphic = true;
+        i = end;
+        continue;
+      }
+      switch (word) {
+        case "par": newParagraph(); break;
+        case "line": emit("\n"); break;
+        case "tab": emit("\t"); break;
+        case "b": flush(); state.b = n !== 0; break;
+        case "i": flush(); state.i = n !== 0; break;
+        case "ul": flush(); state.ul = n !== 0; break;
+        case "ulnone": flush(); state.ul = false; break;
+        case "f": flush(); state.f = String(n); break;
+        case "fs": flush(); state.fs = n; break;
+        case "plain": flush(); state.b = state.i = state.ul = false; break;
+        case "uc": state.uc = n; break;
+        case "u": emit(String.fromCharCode(n < 0 ? n + 65536 : n)); pendingSkip = state.uc; break;
+        case "emdash": emit("—"); break;
+        case "endash": emit("–"); break;
+        case "bullet": emit("•"); break;
+        case "lquote": emit("‘"); break;
+        case "rquote": emit("’"); break;
+        case "ldblquote": emit("“"); break;
+        case "rdblquote": emit("”"); break;
+      }
+    } else if (c === "\n" || c === "\r") {
+      i++;
+    } else {
+      emit(c === "¬" && afterGraphic ? "" : c);
+      i++;
+    }
+  }
+  flush();
+
+  // Sizes are relative to the most used one, which is the body text.
+  const bodySize = Number(Object.entries(sizes).sort((a, b) => b[1] - a[1])[0]?.[0]) || 24;
+  return { paragraphs, bodySize };
+}
+
+const INLINE_IMAGE = /\.(jpe?g|png|gif|heic|tiff?)$/i;
+
+function renderContent(base64) {
+  const container = el("div", { class: "content" });
+  if (!base64) return container;
+  let files;
+  try { files = parseRTFD(base64ToBytes(base64)); } catch { files = null; }
+  if (!files || !files["TXT.rtf"]) return container;
+
+  const photoURL = name => {
+    const blob = files[name];
+    if (!blob) return null;
+    if (name.endsWith(".somadaphoto")) {
+      try {
+        const ref = JSON.parse(new TextDecoder().decode(blob));
+        return ref.path ? PHOTOS_BASE + encodeURIComponent(ref.path) : null;
+      } catch { return null; }
+    }
+    if (INLINE_IMAGE.test(name)) return URL.createObjectURL(new Blob([blob]));
+    return null;
+  };
+
+  const { paragraphs, bodySize } = parseRTF(new TextDecoder("latin1").decode(files["TXT.rtf"]));
+  for (const runs of paragraphs) {
+    let p = el("p");
+    for (const run of runs) {
+      if (run.photo) {
+        const src = photoURL(run.photo);
+        if (!src) continue;
+        if (p.childNodes.length) container.append(p);
+        const img = el("img", { src, alt: "", loading: "lazy" });
+        img.addEventListener("error", () => img.remove());
+        container.append(img);
+        p = el("p");
+        continue;
+      }
+      let node = document.createTextNode(run.text);
+      if (run.bold) node = el("strong", {}, [node]);
+      if (run.italic) node = el("em", {}, [node]);
+      if (run.underline) node = el("u", {}, [node]);
+      const ratio = run.size / bodySize;
+      if (Math.abs(ratio - 1) > 0.05) node = el("span", { style: `font-size:${Math.min(Math.max(ratio, 0.7), 2).toFixed(2)}em` }, [node]);
+      p.append(node);
+    }
+    if (p.textContent.trim()) container.append(p);
+  }
+  return container;
+}
+
+// MARK: - Map
+
+let map = null;
+let mapReady = false;
+let markers = [];
+let lastTrip = null;
+let didFit = false;
+
+function setupMap() {
+  if (!window.mapboxgl || !mapboxToken || mapboxToken.startsWith("__")) { $("map").hidden = true; return; }
+  mapboxgl.accessToken = mapboxToken;
+  const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  map = new mapboxgl.Map({
+    container: "map",
+    style: "mapbox://styles/mapbox/standard",
+    config: {
+      basemap: {
+        lightPreset: dark ? "night" : "day",
+        showPointOfInterestLabels: true,
+        showTransitLabels: false,
+        showPlaceLabels: true,
+        showRoadLabels: false,
+        showPedestrianRoads: false,
+        show3dObjects: true,
+      },
+    },
+    center: [-3.7, 40.4],
+    zoom: 3,
+    attributionControl: true,
+    cooperativeGestures: true,
+  });
+  map.on("load", () => { mapReady = true; if (lastTrip) drawTrip(lastTrip); });
+}
+
+function drawTrip(trip) {
+  if (!map || !mapReady) return;
+  const color = trip.color || "#FFBC2D";
+  const lines = { type: "FeatureCollection", features: trip.lines };
+  if (map.getSource("route")) {
+    map.getSource("route").setData(lines);
+  } else {
+    map.addSource("route", { type: "geojson", data: lines });
+    const base = { type: "line", source: "route", slot: "middle", layout: { "line-cap": "round", "line-join": "round" } };
+    map.addLayer({ ...base, id: "route-ground", filter: ["!=", ["get", "vehicle"], "plane"],
+      paint: { "line-color": color, "line-width": 5, "line-emissive-strength": 1 } });
+    map.addLayer({ ...base, id: "route-air", filter: ["==", ["get", "vehicle"], "plane"],
+      paint: { "line-color": color, "line-width": 4, "line-dasharray": [1, 2], "line-emissive-strength": 1 } });
+  }
+  map.setPaintProperty("route-ground", "line-color", color);
+  map.setPaintProperty("route-air", "line-color", color);
+
+  markers.forEach(m => m.remove());
+  const pagesById = Object.fromEntries(trip.pages.map(p => [p.id, p]));
+  markers = trip.stops.filter(s => Array.isArray(s.coordinates)).map(stop => {
+    const page = stop.page_id && pagesById[stop.page_id];
+    const node = el("div", { class: page ? "marker" : "dot", title: stop.name || "" });
+    if (page) {
+      node.textContent = page.emoji || "📍";
+      node.addEventListener("click", () => document.getElementById("page-" + page.id)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    }
+    return new mapboxgl.Marker({ element: node }).setLngLat(stop.coordinates).addTo(map);
+  });
+
+  if (!didFit) {
+    const coords = trip.stops.map(s => s.coordinates).filter(Array.isArray);
+    trip.lines.forEach(l => (l.geometry?.coordinates || []).forEach(c => coords.push(c)));
+    if (coords.length) {
+      const bounds = coords.reduce((b, c) => b.extend(c), new mapboxgl.LngLatBounds(coords[0], coords[0]));
+      map.fitBounds(bounds, { padding: { top: 40, bottom: 60, left: 40, right: 40 }, maxZoom: 12, duration: 0 });
+      didFit = true;
+    }
+  }
+}
+
+function flyToPage(trip, pageId) {
+  if (!map) return;
+  const stop = trip.stops.find(s => s.page_id === pageId);
+  if (stop) {
+    map.flyTo({ center: stop.coordinates, zoom: Math.max(map.getZoom(), 9) });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+// MARK: - Trip
+
+function relativeTime(iso) {
+  const date = new Date(iso);
+  if (isNaN(date)) return "";
+  const minutes = Math.round((date - Date.now()) / 60000);
+  const rtf = new Intl.RelativeTimeFormat(isSpanish ? "es" : "en", { numeric: "auto" });
+  if (Math.abs(minutes) < 60) return rtf.format(minutes, "minute");
+  if (Math.abs(minutes) < 60 * 24) return rtf.format(Math.round(minutes / 60), "hour");
+  return rtf.format(Math.round(minutes / 1440), "day");
+}
+
+function renderTrip(trip) {
+  const title = [trip.emoji, trip.title || L.trip].filter(Boolean).join(" ");
+  document.title = `${trip.title || L.trip} · Somada`;
+  document.documentElement.style.setProperty("--route", trip.color || "#FFBC2D");
+  $("title").textContent = title;
+  $("meta").replaceChildren(
+    `${L.pages(trip.pages.length)} · ${L.stops(trip.stops.length)} · ${L.updated} ${relativeTime(trip.updated_at)} · `,
+    el("span", { class: "live", text: L.live }),
+  );
+  $("header").hidden = false;
+  $("error").hidden = true;
+
+  const list = $("pages");
+  list.replaceChildren();
+  if (!trip.pages.length) list.append(el("div", { class: "empty", text: L.noPages }));
+  for (const page of trip.pages) {
+    const head = el("div", { class: "head" }, [
+      el("div", { class: "badge", text: page.emoji || "📍", style: page.color ? `background:${page.color}` : null }),
+      el("div", {}, [
+        el("h2", { class: "rounded", text: page.title || "" }),
+        el("div", { class: "sub", text: [page.date, page.sub_title].filter(Boolean).join(" · ") }),
+      ]),
+    ]);
+    head.addEventListener("click", () => flyToPage(trip, page.id));
+    let cover = null;
+    if (page.photo_url && /^https:\/\//.test(page.photo_url)) {
+      cover = el("img", { class: "cover", src: page.photo_url, alt: "", loading: "lazy" });
+      cover.addEventListener("error", () => cover.remove());
+    }
+    list.append(el("article", { class: "page", id: "page-" + page.id }, [
+      cover,
+      el("div", { class: "body" }, [head, renderContent(page.content)]),
+    ]));
+  }
+  drawTrip(trip);
+}
+
+function showError(message) {
+  $("header").hidden = true;
+  $("pages").replaceChildren();
+  $("error").textContent = message;
+  $("error").hidden = false;
+  markers.forEach(m => m.remove());
+  if (map && map.getSource("route")) map.getSource("route").setData({ type: "FeatureCollection", features: [] });
+}
+
+async function load() {
+  if (!token) { showError(L.notFound); return; }
+  try {
+    const response = await fetch(env.supabaseURL + "/rest/v1/rpc/get_shared_trip", {
+      method: "POST",
+      headers: { apikey: env.anonKey, Authorization: "Bearer " + env.anonKey, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_token: token }),
+      cache: "no-store",
+    });
+    if (!response.ok) throw new Error(String(response.status));
+    const trip = await response.json();
+    if (!trip) { lastTrip = null; showError(L.notFound); return; }
+    if (lastTrip && lastTrip.updated_at === trip.updated_at) {
+      $("meta").firstChild.textContent = `${L.pages(trip.pages.length)} · ${L.stops(trip.stops.length)} · ${L.updated} ${relativeTime(trip.updated_at)} · `;
+      return;
+    }
+    lastTrip = trip;
+    renderTrip(trip);
+  } catch {
+    if (!lastTrip) showError(L.failed);
+  }
+}
+
+$("footer").append(`${L.footer} `, el("a", { href: APP_STORE_URL, text: "Somada" }), " · ", el("a", { href: APP_STORE_URL, text: L.get }));
+setupMap();
+load();
+setInterval(() => { if (document.visibilityState === "visible") load(); }, REFRESH_MS);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") load(); });
+</script>
+</body>
+</html>

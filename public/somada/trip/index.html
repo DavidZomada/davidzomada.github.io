@@ -13,6 +13,7 @@
 <meta property="og:type" content="website">
 <link rel="icon" href="/favicon.svg">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,500,1,0&icon_names=agriculture,airport_shuttle,chevron_left,chevron_right,directions_bike,directions_boat,directions_bus,directions_car,electric_scooter,fit_screen,flight,hiking,local_shipping,moped,paragliding,sailing,scuba_diving,surfing,tram,train,two_wheeler&display=block">
 <style>
   :root {
     --bg: #F2F2F7;
@@ -20,6 +21,7 @@
     --text: #1C1C1E;
     --text-2: #6C6C70;
     --sep: rgba(60, 60, 67, 0.18);
+    --glass: rgba(255, 255, 255, 0.82);
     --accent: #FFBC2D;
     --route: #FFBC2D;
     color-scheme: light dark;
@@ -31,6 +33,7 @@
       --text: #F2F2F7;
       --text-2: #A1A1A6;
       --sep: rgba(84, 84, 88, 0.6);
+      --glass: rgba(44, 44, 46, 0.82);
     }
   }
   * { box-sizing: border-box; }
@@ -40,52 +43,120 @@
     -webkit-font-smoothing: antialiased;
   }
   .rounded { font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif; }
-  #map { position: relative; height: 46vh; min-height: 260px; width: 100%; z-index: 1; background: var(--bg); }
-  main { position: relative; z-index: 2; max-width: 680px; margin: -22px auto 0; padding: 0 16px 48px; }
-  header.trip {
-    background: var(--card); border-radius: 26px; padding: 18px 20px; margin-bottom: 16px;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  .icon { font-family: "Material Symbols Rounded"; font-weight: normal; font-style: normal; line-height: 1;
+    letter-spacing: normal; text-transform: none; white-space: nowrap; overflow: hidden; display: inline-block;
+    -webkit-font-feature-settings: "liga"; font-feature-settings: "liga"; }
+
+  #map { position: relative; height: 62vh; height: 62svh; min-height: 320px; width: 100%; background: var(--bg); }
+  .map-button {
+    position: absolute; top: max(12px, env(safe-area-inset-top)); right: 12px; z-index: 3;
+    width: 40px; height: 40px; border-radius: 50%; border: 0; display: grid; place-items: center;
+    background: var(--glass); color: var(--text); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); cursor: pointer;
   }
-  header.trip h1 { margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; }
-  header.trip .meta { margin-top: 6px; color: var(--text-2); font-size: 15px; }
+  .map-button .icon { font-size: 22px; }
+
+  main { position: relative; z-index: 2; max-width: 680px; margin: -26px auto 0; padding: 0 16px 120px; }
+  header.trip { padding: 2px 4px 12px; }
+  header.trip h1 { margin: 0; font-size: 24px; line-height: 1.15; font-weight: 700; }
+  header.trip .meta { margin-top: 4px; color: var(--text-2); font-size: 14px; }
+  .sheet-top { background: var(--card); border-radius: 26px 26px 0 0; padding: 14px 16px 0; box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.12); }
+  .grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--sep); margin: 0 auto 10px; }
   .live { display: inline-flex; align-items: center; gap: 6px; }
   .live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #30D158; }
-  article.page { background: var(--card); border-radius: 22px; overflow: hidden; margin-bottom: 16px; }
-  article.page > .cover { display: block; width: 100%; max-height: 420px; object-fit: cover; background: var(--sep); }
-  article.page .body { padding: 16px 20px 20px; }
-  article.page .head { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+
+  article.page { background: var(--card); border-radius: 0 0 22px 22px; overflow: hidden; padding: 0 0 20px; touch-action: pan-y; }
+  article.page > .cover { display: block; width: calc(100% - 32px); margin: 4px 16px 0; max-height: 420px; object-fit: cover; border-radius: 16px; background: var(--sep); }
+  article.page .body { padding: 14px 20px 0; }
+  article.page .head { display: flex; gap: 12px; align-items: center; }
   article.page .badge {
-    flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
-    font-size: 22px; background: var(--route);
+    flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; overflow: hidden;
+    font-size: 22px; background: var(--route); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   }
-  article.page h2 { margin: 0; font-size: 21px; line-height: 1.2; font-weight: 700; }
+  article.page .badge img { width: 100%; height: 100%; object-fit: cover; }
+  article.page h2 { margin: 0; font-size: 22px; line-height: 1.2; font-weight: 700; }
   article.page .sub { color: var(--text-2); font-size: 15px; margin-top: 2px; }
-  .content { margin-top: 12px; overflow-wrap: anywhere; }
+  .content { margin-top: 14px; overflow-wrap: anywhere; }
   .content p { margin: 0 0 0.6em; white-space: pre-wrap; }
-  .content p:empty { display: none; }
   .content img { display: block; width: 100%; height: auto; border-radius: 14px; margin: 10px 0; background: var(--sep); }
   .empty, .error { text-align: center; color: var(--text-2); padding: 48px 16px; }
-  footer { text-align: center; color: var(--text-2); font-size: 14px; padding: 8px 16px 40px; }
-  footer a { color: inherit; font-weight: 600; }
-  .marker {
-    width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 16px;
-    background: #fff; border: 3px solid var(--route); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); cursor: pointer;
+  article.page.enter-next { animation: enter-next 0.28s ease-out; }
+  article.page.enter-prev { animation: enter-prev 0.28s ease-out; }
+  @keyframes enter-next { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+  @keyframes enter-prev { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+
+  nav.pager {
+    position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 5;
+    display: flex; align-items: center; gap: 4px; padding: 6px; border-radius: 999px;
+    background: var(--glass); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
   }
-  .dot { width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 3px solid var(--route); }
-  .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right { bottom: 22px; }
+  nav.pager button {
+    border: 0; background: transparent; color: var(--text); font: 600 16px/1 inherit; height: 44px; padding: 0 14px;
+    border-radius: 999px; display: inline-flex; align-items: center; gap: 2px; cursor: pointer;
+  }
+  nav.pager button:disabled { opacity: 0.3; cursor: default; }
+  nav.pager button:not(:disabled):active { background: var(--sep); }
+  nav.pager .icon { font-size: 24px; }
+  nav.pager .count { min-width: 64px; text-align: center; color: var(--text-2); font-size: 15px; font-variant-numeric: tabular-nums; }
+  .new-page { position: fixed; left: 50%; bottom: calc(max(16px, env(safe-area-inset-bottom)) + 64px); transform: translateX(-50%);
+    z-index: 5; border: 0; border-radius: 999px; padding: 10px 16px; font: 600 15px/1 inherit; color: #000;
+    background: var(--accent); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); cursor: pointer; }
+
+  footer { text-align: center; color: var(--text-2); font-size: 14px; padding: 0 16px 110px; }
+  footer a { color: inherit; font-weight: 600; }
+
+  /* Map pins, drawn like the app's: a circle in the page's colour with a white ring. */
+  .pin { width: 30px; height: 30px; cursor: pointer; }
+  .pin .circle {
+    position: absolute; inset: 0; border-radius: 50%; border: 2.5px solid #fff; overflow: hidden;
+    display: grid; place-items: center; font-size: 15px; background: var(--pin, #FFBC2D);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  }
+  .pin .circle img { width: 100%; height: 100%; object-fit: cover; }
+  .pin.selected { width: 30px; height: 30px; }
+  .pin.selected .head {
+    position: absolute; left: 50%; bottom: 50%; width: 62px; height: 62px; margin-left: -31px; margin-bottom: 14px;
+    border-radius: 50%; background: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    animation: bounce 0.45s cubic-bezier(.3, 1.6, .5, 1); transform-origin: 50% 130%;
+  }
+  .pin.selected .head::after {
+    content: ""; position: absolute; left: 50%; top: 54px; margin-left: -13px;
+    border-left: 13px solid transparent; border-right: 13px solid transparent; border-top: 18px solid #fff;
+  }
+  .pin.selected .circle { inset: 5px; border: 0; font-size: 28px; box-shadow: none; }
+  .pin.selected .anchor { position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px; border-radius: 50%;
+    background: var(--accent); border: 1.5px solid #fff; }
+  @keyframes bounce { from { transform: scale(0.6) translateY(-14px); } to { transform: none; } }
+  .stop-dot { width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 3px solid var(--route); }
+  .vehicle {
+    width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--route); border: 1.5px solid #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  .vehicle .icon { font-size: 14px; }
+  .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right { bottom: 30px; }
 </style>
 </head>
 <body>
 <div id="map" aria-hidden="true"></div>
 <main>
-  <header class="trip" id="header" hidden>
-    <h1 class="rounded" id="title"></h1>
-    <div class="meta" id="meta"></div>
-  </header>
-  <div id="pages"></div>
+  <div class="sheet-top" id="sheet" hidden>
+    <div class="grabber"></div>
+    <header class="trip">
+      <h1 class="rounded" id="title"></h1>
+      <div class="meta" id="meta"></div>
+    </header>
+  </div>
+  <div id="page"></div>
   <div class="error" id="error" hidden></div>
 </main>
 <footer id="footer"></footer>
+<nav class="pager" id="pager" hidden>
+  <button id="prev" type="button"><span class="icon" aria-hidden="true">chevron_left</span><span id="prev-label"></span></button>
+  <span class="count" id="count"></span>
+  <button id="next" type="button"><span id="next-label"></span><span class="icon" aria-hidden="true">chevron_right</span></button>
+</nav>
+<button class="new-page" id="new-page" type="button" hidden></button>
 
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js"></script>
 <script>
@@ -110,7 +181,7 @@ const params = new URLSearchParams(location.search);
 const isLocalHost = ["localhost", "127.0.0.1"].includes(location.hostname);
 const env = isLocalHost && params.get("env") === "local" ? LOCAL : PRODUCTION;
 const mapboxToken = (isLocalHost && params.get("mapbox_token")) || MAPBOX_TOKEN;
-const token = params.get("t") || location.hash.slice(1);
+const token = params.get("t");
 
 const isSpanish = (navigator.language || "es").toLowerCase().startsWith("es");
 const L = isSpanish ? {
@@ -124,6 +195,10 @@ const L = isSpanish ? {
   footer: "Diario de viaje hecho con",
   get: "Descarga Somada",
   trip: "Viaje",
+  prev: "Anterior",
+  next: "Siguiente",
+  newPages: n => n === 1 ? "1 página nueva" : `${n} páginas nuevas`,
+  overview: "Ver toda la ruta",
 } : {
   notFound: "This link doesn't exist or is no longer shared.",
   failed: "The trip couldn't be loaded. Check your connection.",
@@ -135,6 +210,10 @@ const L = isSpanish ? {
   footer: "Travel journal made with",
   get: "Get Somada",
   trip: "Trip",
+  prev: "Previous",
+  next: "Next",
+  newPages: n => n === 1 ? "1 new page" : `${n} new pages`,
+  overview: "Show the whole route",
 };
 document.documentElement.lang = isSpanish ? "es" : "en";
 
@@ -356,12 +435,74 @@ function renderContent(base64) {
   return container;
 }
 
+// MARK: - Pins and vehicles
+
+const isHTTPS = url => typeof url === "string" && /^https:\/\//.test(url);
+
+/// The page's icon, as the app draws it: its photo, or else its emoji.
+function pageIcon(page) {
+  if (page.icon_kind === "photo" && isHTTPS(page.photo_url)) {
+    const img = el("img", { src: page.photo_url, alt: "", loading: "lazy" });
+    img.addEventListener("error", () => img.replaceWith(page.emoji || "📍"));
+    return img;
+  }
+  return document.createTextNode(page.emoji || "📍");
+}
+
+const VEHICLE_ICONS = {
+  plane: "flight", car: "directions_car", bicycle: "directions_bike", hiking: "hiking", train: "train",
+  scooter: "moped", balloon: "paragliding", sailboat: "sailing", yacht: "directions_boat", jetski: "surfing",
+  ship: "directions_boat", submarine: "scuba_diving", van: "airport_shuttle", bus: "directions_bus",
+  truck: "local_shipping", jeep: "directions_car", motorbike: "two_wheeler", kickscooter: "electric_scooter",
+  tractor: "agriculture", tram: "tram", helicopter: "flight", zeppelin: "flight",
+};
+
+function isLightColor(hex) {
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hex || "");
+  if (!m) return false;
+  const [r, g, b] = m.slice(1).map(x => parseInt(x, 16) / 255);
+  return 0.299 * r + 0.587 * g + 0.114 * b > 0.65;
+}
+
+function haversine([lon1, lat1], [lon2, lat2]) {
+  const rad = Math.PI / 180;
+  const a = Math.sin((lat2 - lat1) * rad / 2) ** 2
+    + Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin((lon2 - lon1) * rad / 2) ** 2;
+  return 2 * 6371000 * Math.asin(Math.sqrt(a));
+}
+
+/// The point halfway along a line and the line's length in metres.
+function middleOf(coords) {
+  const lengths = [];
+  let total = 0;
+  for (let i = 1; i < coords.length; i++) { const d = haversine(coords[i - 1], coords[i]); lengths.push(d); total += d; }
+  let target = total / 2;
+  for (let i = 0; i < lengths.length; i++) {
+    if (target <= lengths[i] && lengths[i] > 0) {
+      const t = target / lengths[i];
+      const [a, b] = [coords[i], coords[i + 1]];
+      return { point: [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t], length: total };
+    }
+    target -= lengths[i];
+  }
+  return { point: coords[0], length: total };
+}
+
+/// The app shows a segment's vehicle only once the segment is at least 56 points long on screen.
+function minZoomForVehicle(length, latitude) {
+  const metersPerPointAtZoomZero = 40075017 * Math.cos(latitude * Math.PI / 180) / 512;
+  return Math.max(0, Math.log2(metersPerPointAtZoomZero * 56 / length));
+}
+
 // MARK: - Map
 
 let map = null;
 let mapReady = false;
-let markers = [];
+let pageMarkers = new Map();
+let otherMarkers = [];
+let vehicleMarkers = [];
 let lastTrip = null;
+let selectedId = null;
 let didFit = false;
 
 function setupMap() {
@@ -387,7 +528,26 @@ function setupMap() {
     attributionControl: true,
     cooperativeGestures: true,
   });
+  const overview = el("button", { class: "map-button", type: "button", title: L.overview, "aria-label": L.overview },
+    [el("span", { class: "icon", text: "fit_screen", "aria-hidden": "true" })]);
+  overview.addEventListener("click", () => fitRoute(true));
+  $("map").append(overview);
   map.on("load", () => { mapReady = true; if (lastTrip) drawTrip(lastTrip); });
+  map.on("zoom", updateVehicleVisibility);
+}
+
+function routeCoordinates(trip) {
+  const coords = trip.stops.map(s => s.coordinates).filter(Array.isArray);
+  trip.lines.forEach(l => (l.geometry?.coordinates || []).forEach(c => coords.push(c)));
+  return coords;
+}
+
+function fitRoute(animated) {
+  if (!map || !lastTrip) return;
+  const coords = routeCoordinates(lastTrip);
+  if (!coords.length) return;
+  const bounds = coords.reduce((b, c) => b.extend(c), new mapboxgl.LngLatBounds(coords[0], coords[0]));
+  map.fitBounds(bounds, { padding: { top: 90, bottom: 60, left: 40, right: 40 }, maxZoom: 11, duration: animated ? 900 : 0 });
 }
 
 function drawTrip(trip) {
@@ -407,39 +567,72 @@ function drawTrip(trip) {
   map.setPaintProperty("route-ground", "line-color", color);
   map.setPaintProperty("route-air", "line-color", color);
 
-  markers.forEach(m => m.remove());
-  const pagesById = Object.fromEntries(trip.pages.map(p => [p.id, p]));
-  markers = trip.stops.filter(s => Array.isArray(s.coordinates)).map(stop => {
-    const page = stop.page_id && pagesById[stop.page_id];
-    const node = el("div", { class: page ? "marker" : "dot", title: stop.name || "" });
-    if (page) {
-      node.textContent = page.emoji || "📍";
-      node.addEventListener("click", () => document.getElementById("page-" + page.id)?.scrollIntoView({ behavior: "smooth", block: "start" }));
-    }
-    return new mapboxgl.Marker({ element: node }).setLngLat(stop.coordinates).addTo(map);
+  // Vehicles first, so the pins sit on top of them.
+  vehicleMarkers.forEach(v => v.marker.remove());
+  const light = isLightColor(color);
+  vehicleMarkers = trip.lines.flatMap(line => {
+    const icon = VEHICLE_ICONS[line.properties?.badge];
+    const coords = line.geometry?.coordinates;
+    if (!icon || !Array.isArray(coords) || coords.length < 2) return [];
+    const { point, length } = middleOf(coords);
+    if (!(length > 0)) return [];
+    const node = el("div", { class: "vehicle", style: `color:${light ? "#000" : "#fff"}` },
+      [el("span", { class: "icon", text: icon, "aria-hidden": "true" })]);
+    const marker = new mapboxgl.Marker({ element: node }).setLngLat(point).addTo(map);
+    return [{ marker, node, minZoom: minZoomForVehicle(length, point[1]) }];
   });
+  updateVehicleVisibility();
 
-  if (!didFit) {
-    const coords = trip.stops.map(s => s.coordinates).filter(Array.isArray);
-    trip.lines.forEach(l => (l.geometry?.coordinates || []).forEach(c => coords.push(c)));
-    if (coords.length) {
-      const bounds = coords.reduce((b, c) => b.extend(c), new mapboxgl.LngLatBounds(coords[0], coords[0]));
-      map.fitBounds(bounds, { padding: { top: 40, bottom: 60, left: 40, right: 40 }, maxZoom: 12, duration: 0 });
-      didFit = true;
+  pageMarkers.forEach(m => m.remove());
+  otherMarkers.forEach(m => m.remove());
+  pageMarkers = new Map();
+  otherMarkers = [];
+  const pagesById = Object.fromEntries(trip.pages.map(p => [p.id, p]));
+  for (const stop of trip.stops) {
+    if (!Array.isArray(stop.coordinates)) continue;
+    const page = stop.page_id && pagesById[stop.page_id];
+    if (page && !pageMarkers.has(page.id)) {
+      const node = el("div", { class: "pin", title: page.title || "" });
+      node.addEventListener("click", event => { event.stopPropagation(); select(page.id, { fly: true }); });
+      const marker = new mapboxgl.Marker({ element: node }).setLngLat(stop.coordinates).addTo(map);
+      marker._page = page;
+      pageMarkers.set(page.id, marker);
+    } else if (!page) {
+      otherMarkers.push(new mapboxgl.Marker({ element: el("div", { class: "stop-dot", title: stop.name || "" }) })
+        .setLngLat(stop.coordinates).addTo(map));
     }
   }
+  paintPins();
+
+  if (!didFit) { fitRoute(false); didFit = true; }
 }
 
-function flyToPage(trip, pageId) {
+function updateVehicleVisibility() {
   if (!map) return;
-  const stop = trip.stops.find(s => s.page_id === pageId);
-  if (stop) {
-    map.flyTo({ center: stop.coordinates, zoom: Math.max(map.getZoom(), 9) });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  const zoom = map.getZoom();
+  vehicleMarkers.forEach(v => { v.node.style.display = zoom >= v.minZoom ? "" : "none"; });
 }
 
-// MARK: - Trip
+function paintPins() {
+  pageMarkers.forEach((marker, id) => {
+    const page = marker._page;
+    const node = marker.getElement();
+    const selected = id === selectedId;
+    node.classList.toggle("selected", selected);
+    node.style.zIndex = selected ? "10" : "";
+    node.style.setProperty("--pin", page.color || "#FFBC2D");
+    const circle = el("div", { class: "circle" }, [pageIcon(page)]);
+    node.replaceChildren(...(selected ? [el("div", { class: "anchor" }), el("div", { class: "head" }, [circle])] : [circle]));
+  });
+}
+
+function flyToSelected() {
+  const marker = selectedId && pageMarkers.get(selectedId);
+  if (!map || !marker) return;
+  map.flyTo({ center: marker.getLngLat(), zoom: Math.max(map.getZoom(), 7), offset: [0, 30], duration: 1100, essential: true });
+}
+
+// MARK: - Pages
 
 function relativeTime(iso) {
   const date = new Date(iso);
@@ -451,51 +644,86 @@ function relativeTime(iso) {
   return rtf.format(Math.round(minutes / 1440), "day");
 }
 
-function renderTrip(trip) {
-  const title = [trip.emoji, trip.title || L.trip].filter(Boolean).join(" ");
+function renderHeader(trip) {
   document.title = `${trip.title || L.trip} · Somada`;
   document.documentElement.style.setProperty("--route", trip.color || "#FFBC2D");
-  $("title").textContent = title;
+  $("title").textContent = [trip.emoji, trip.title || L.trip].filter(Boolean).join(" ");
   $("meta").replaceChildren(
     `${L.pages(trip.pages.length)} · ${L.stops(trip.stops.length)} · ${L.updated} ${relativeTime(trip.updated_at)} · `,
     el("span", { class: "live", text: L.live }),
   );
-  $("header").hidden = false;
+  $("sheet").hidden = false;
   $("error").hidden = true;
+}
 
-  const list = $("pages");
-  list.replaceChildren();
-  if (!trip.pages.length) list.append(el("div", { class: "empty", text: L.noPages }));
-  for (const page of trip.pages) {
-    const head = el("div", { class: "head" }, [
-      el("div", { class: "badge", text: page.emoji || "📍", style: page.color ? `background:${page.color}` : null }),
-      el("div", {}, [
-        el("h2", { class: "rounded", text: page.title || "" }),
-        el("div", { class: "sub", text: [page.date, page.sub_title].filter(Boolean).join(" · ") }),
-      ]),
-    ]);
-    head.addEventListener("click", () => flyToPage(trip, page.id));
-    let cover = null;
-    if (page.photo_url && /^https:\/\//.test(page.photo_url)) {
-      cover = el("img", { class: "cover", src: page.photo_url, alt: "", loading: "lazy" });
-      cover.addEventListener("error", () => cover.remove());
-    }
-    list.append(el("article", { class: "page", id: "page-" + page.id }, [
-      cover,
-      el("div", { class: "body" }, [head, renderContent(page.content)]),
-    ]));
+function renderPage(direction) {
+  const trip = lastTrip;
+  const container = $("page");
+  if (!trip.pages.length) {
+    container.replaceChildren(el("article", { class: "page" }, [el("div", { class: "empty", text: L.noPages })]));
+    $("pager").hidden = true;
+    return;
   }
-  drawTrip(trip);
+  const index = trip.pages.findIndex(p => p.id === selectedId);
+  const page = trip.pages[index];
+
+  let cover = null;
+  if (isHTTPS(page.photo_url)) {
+    cover = el("img", { class: "cover", src: page.photo_url, alt: "" });
+    cover.addEventListener("error", () => cover.remove());
+  }
+  const badge = el("div", { class: "badge", style: page.color ? `background:${page.color}` : null }, [pageIcon(page)]);
+  const article = el("article", { class: "page" + (direction ? ` enter-${direction}` : "") }, [
+    cover,
+    el("div", { class: "body" }, [
+      el("div", { class: "head" }, [
+        badge,
+        el("div", {}, [
+          el("h2", { class: "rounded", text: page.title || "" }),
+          el("div", { class: "sub", text: [page.date, page.sub_title].filter(Boolean).join(" · ") }),
+        ]),
+      ]),
+      renderContent(page.content),
+    ]),
+  ]);
+  container.replaceChildren(article);
+
+  $("pager").hidden = false;
+  $("prev").disabled = index <= 0;
+  $("next").disabled = index >= trip.pages.length - 1;
+  $("count").textContent = `${index + 1} / ${trip.pages.length}`;
+}
+
+function select(pageId, { fly = false, direction = null, scroll = false } = {}) {
+  if (!lastTrip || !lastTrip.pages.some(p => p.id === pageId)) return;
+  selectedId = pageId;
+  history.replaceState(null, "", "#" + pageId);
+  renderPage(direction);
+  paintPins();
+  if (fly) flyToSelected();
+  if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function step(delta) {
+  const pages = lastTrip?.pages || [];
+  const index = pages.findIndex(p => p.id === selectedId);
+  const next = pages[index + delta];
+  if (next) select(next.id, { fly: true, direction: delta > 0 ? "next" : "prev", scroll: true });
 }
 
 function showError(message) {
-  $("header").hidden = true;
-  $("pages").replaceChildren();
+  $("sheet").hidden = true;
+  $("pager").hidden = true;
+  $("page").replaceChildren();
   $("error").textContent = message;
   $("error").hidden = false;
-  markers.forEach(m => m.remove());
+  pageMarkers.forEach(m => m.remove());
+  otherMarkers.forEach(m => m.remove());
+  vehicleMarkers.forEach(v => v.marker.remove());
   if (map && map.getSource("route")) map.getSource("route").setData({ type: "FeatureCollection", features: [] });
 }
+
+let knownPageIds = null;
 
 async function load() {
   if (!token) { showError(L.notFound); return; }
@@ -510,15 +738,57 @@ async function load() {
     const trip = await response.json();
     if (!trip) { lastTrip = null; showError(L.notFound); return; }
     if (lastTrip && lastTrip.updated_at === trip.updated_at) {
-      $("meta").firstChild.textContent = `${L.pages(trip.pages.length)} · ${L.stops(trip.stops.length)} · ${L.updated} ${relativeTime(trip.updated_at)} · `;
+      renderHeader(trip);
       return;
     }
+    const firstLoad = !lastTrip;
     lastTrip = trip;
-    renderTrip(trip);
+    renderHeader(trip);
+
+    // Opens on the page in the link, or else on the latest one; a refresh keeps the reader's page.
+    const ids = trip.pages.map(p => p.id);
+    if (!ids.includes(selectedId)) {
+      const fromHash = decodeURIComponent(location.hash.slice(1));
+      selectedId = ids.includes(fromHash) ? fromHash : ids[ids.length - 1] || null;
+    }
+    const added = knownPageIds ? ids.filter(id => !knownPageIds.has(id)) : [];
+    knownPageIds = new Set(ids);
+    if (added.length) {
+      const button = $("new-page");
+      button.textContent = L.newPages(added.length) + " →";
+      button.onclick = () => { button.hidden = true; select(added[added.length - 1], { fly: true, direction: "next", scroll: true }); };
+      button.hidden = false;
+    }
+
+    renderPage(null);
+    drawTrip(trip);
+    if (firstLoad && selectedId) history.replaceState(null, "", "#" + selectedId);
   } catch {
     if (!lastTrip) showError(L.failed);
   }
 }
+
+// MARK: - Controls
+
+$("prev-label").textContent = L.prev;
+$("next-label").textContent = L.next;
+$("prev").addEventListener("click", () => step(-1));
+$("next").addEventListener("click", () => step(1));
+document.addEventListener("keydown", event => {
+  if (event.key === "ArrowLeft") step(-1);
+  if (event.key === "ArrowRight") step(1);
+});
+
+// A horizontal swipe on the page turns it, as in the app.
+let touchStart = null;
+$("page").addEventListener("touchstart", e => { const t = e.touches[0]; touchStart = { x: t.clientX, y: t.clientY }; }, { passive: true });
+$("page").addEventListener("touchend", e => {
+  if (!touchStart) return;
+  const t = e.changedTouches[0];
+  const dx = t.clientX - touchStart.x, dy = t.clientY - touchStart.y;
+  touchStart = null;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1);
+}, { passive: true });
 
 $("footer").append(`${L.footer} `, el("a", { href: APP_STORE_URL, text: "Somada" }), " · ", el("a", { href: APP_STORE_URL, text: L.get }));
 setupMap();

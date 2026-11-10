@@ -8,12 +8,20 @@
 <meta name="apple-itunes-app" content="app-id=6740721557">
 <meta name="theme-color" content="#FFBC2D">
 <title>Somada · Viaje</title>
-<meta property="og:title" content="Sigue mi viaje en Somada">
-<meta property="og:description" content="La ruta y el diario del viaje, día a día.">
+<meta name="description" content="Sigue este viaje en directo: la ruta en el mapa y el diario, parada a parada. Follow this trip live on Somada.">
+<meta property="og:title" content="Sigue este viaje en directo · Somada">
+<meta property="og:description" content="La ruta en el mapa y el diario, parada a parada. Follow the route and the journal, stop by stop.">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Somada">
+<meta property="og:image" content="https://davidzomada.com/somada/trip/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://davidzomada.com/somada/trip/og.jpg">
+<link rel="apple-touch-icon" href="/somada/trip/somada-icon.jpg">
 <link rel="icon" href="/favicon.svg">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,500,1,0&icon_names=agriculture,airport_shuttle,chevron_left,chevron_right,directions_bike,directions_boat,directions_bus,directions_car,electric_scooter,fit_screen,flight,hiking,layers,local_shipping,moped,paragliding,sailing,scuba_diving,surfing,tram,train,two_wheeler&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,500,1,0&icon_names=agriculture,airport_shuttle,arrow_forward,chevron_left,chevron_right,directions_bike,directions_boat,directions_bus,directions_car,electric_scooter,fit_screen,flight,hiking,layers,local_shipping,moped,paragliding,sailing,scuba_diving,surfing,tram,train,two_wheeler&display=block">
 <style>
   :root {
     --bg: #F2F2F7;
@@ -73,17 +81,59 @@
   .swatch.monochrome { background: linear-gradient(135deg, #e6e6e6 0 45%, #b9b9b9 45% 100%); }
   .swatch.satellite { background: linear-gradient(135deg, #4f6b3a 0 45%, #1f4a6b 45% 100%); }
 
-  main { position: relative; z-index: 2; max-width: 680px; margin: -26px auto 0; padding: 0 16px 120px; }
+  main { position: relative; z-index: 2; max-width: 680px; margin: -26px auto 0; padding: 0 16px 24px; }
   header.trip { padding: 2px 4px 12px; }
   header.trip h1 { margin: 0; font-size: 24px; line-height: 1.15; font-weight: 700; }
   header.trip .meta { margin-top: 4px; color: var(--text-2); font-size: 14px; }
   .sheet-top { background: var(--card); border-radius: 26px 26px 0 0; padding: 14px 16px 0; box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.12); }
   .grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--sep); margin: 0 auto 10px; }
-  .live { display: inline-flex; align-items: center; gap: 6px; }
-  .live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #30D158; }
+  .live { display: inline-flex; align-items: center; gap: 6px; color: #30D158; font-weight: 700; text-transform: uppercase;
+    font-size: 12px; letter-spacing: 0.06em; }
+  .live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #30D158; animation: pulse 1.6s ease-out infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0.6); } 100% { box-shadow: 0 0 0 8px rgba(48, 209, 88, 0); } }
+  .trip-row { display: flex; align-items: flex-start; gap: 12px; }
+  .trip-row > div { flex: 1; min-width: 0; }
+  .get-app {
+    flex: none; display: inline-flex; align-items: center; height: 32px; padding: 0 14px; border-radius: 999px;
+    background: var(--accent); color: #000; font-weight: 700; font-size: 14px; text-decoration: none; margin-top: 2px;
+  }
+
+  /* The app's brand, over the map, for readers who arrive without knowing it. */
+  .brand {
+    position: absolute; top: max(12px, env(safe-area-inset-top)); left: 12px; z-index: 3;
+    display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px 0 5px; border-radius: 999px;
+    background: var(--glass); color: var(--text); text-decoration: none; font-weight: 700; font-size: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  }
+  .brand img { width: 30px; height: 30px; border-radius: 8px; }
+  .brand small { font-weight: 500; color: var(--text-2); font-size: 13px; }
+
+  .cta {
+    margin-top: 16px; padding: 22px 20px 20px; border-radius: 22px; text-align: center; color: #fff;
+    background: radial-gradient(120% 90% at 50% 0%, #2b4f86 0%, #13213a 55%, #0b0f17 100%);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  }
+  .cta img { width: 64px; height: 64px; border-radius: 15px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4); }
+  .cta h3 { margin: 12px 0 6px; font-size: 22px; line-height: 1.2; }
+  .cta p { margin: 0 auto 16px; max-width: 420px; color: rgba(255, 255, 255, 0.78); font-size: 15px; }
+  .cta .store {
+    display: flex; align-items: center; justify-content: center; gap: 8px; height: 52px; border-radius: 14px;
+    background: var(--accent); color: #000; font-weight: 700; font-size: 17px; text-decoration: none;
+  }
+  .cta .store .icon { font-size: 20px; }
+  .cta .free { margin-top: 8px; font-size: 13px; color: rgba(255, 255, 255, 0.6); }
+  .maker {
+    display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 14px 16px; border-radius: 18px;
+    background: var(--card); color: var(--text); text-decoration: none;
+  }
+  .maker .avatar { flex: none; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center;
+    background: #1c1916; color: #f3efe6; font: 17px Georgia, serif; }
+  .maker div { flex: 1; font-size: 14px; color: var(--text-2); line-height: 1.35; }
+  .maker strong { display: block; color: var(--text); font-size: 15px; }
+  .maker .icon { color: var(--text-2); font-size: 20px; }
 
   article.page { background: var(--card); border-radius: 0 0 22px 22px; overflow: hidden; padding: 0 0 20px; touch-action: pan-y; }
-  article.page > .cover { display: block; width: calc(100% - 32px); margin: 4px 16px 0; max-height: 420px; object-fit: cover; border-radius: 16px; background: var(--sep); }
+  article.page > .cover { display: block; width: calc(100% - 32px); margin: 4px 16px 0; aspect-ratio: 4 / 3; max-height: 360px; object-fit: cover; border-radius: 16px; background: var(--sep); }
   article.page .body { padding: 14px 20px 0; }
   article.page .head { display: flex; gap: 12px; align-items: center; }
   article.page .badge {
@@ -108,6 +158,7 @@
     background: var(--glass); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
     -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
   }
+  nav.pager[hidden], .new-page[hidden], .sheet-top[hidden] { display: none; }
   nav.pager button {
     border: 0; background: transparent; color: var(--text); font: 600 16px/1 inherit; height: 44px; padding: 0 14px;
     border-radius: 999px; display: inline-flex; align-items: center; gap: 2px; cursor: pointer;
@@ -120,7 +171,7 @@
     z-index: 5; border: 0; border-radius: 999px; padding: 10px 16px; font: 600 15px/1 inherit; color: #000;
     background: var(--accent); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); cursor: pointer; }
 
-  footer { text-align: center; color: var(--text-2); font-size: 14px; padding: 0 16px 110px; }
+  footer { text-align: center; color: var(--text-2); font-size: 13px; padding: 4px 16px 104px; }
   footer a { color: inherit; font-weight: 600; }
 
   /* Map pins, drawn like the app's: a circle in the page's colour with a white ring. */
@@ -159,13 +210,28 @@
 <main>
   <div class="sheet-top" id="sheet" hidden>
     <div class="grabber"></div>
-    <header class="trip">
-      <h1 class="rounded" id="title"></h1>
-      <div class="meta" id="meta"></div>
+    <header class="trip trip-row">
+      <div>
+        <h1 class="rounded" id="title"></h1>
+        <div class="meta" id="meta"></div>
+      </div>
+      <a class="get-app" id="get-app"></a>
     </header>
   </div>
   <div id="page"></div>
   <div class="error" id="error" hidden></div>
+  <section class="cta" id="cta">
+    <img src="/somada/trip/somada-icon.jpg" alt="" width="64" height="64">
+    <h3 class="rounded" id="cta-title"></h3>
+    <p id="cta-text"></p>
+    <a class="store" id="cta-store"></a>
+    <div class="free" id="cta-free"></div>
+  </section>
+  <a class="maker" id="maker" href="https://davidzomada.com/">
+    <span class="avatar" aria-hidden="true">Dz</span>
+    <div><strong id="maker-title"></strong><span id="maker-text"></span></div>
+    <span class="icon" aria-hidden="true">arrow_forward</span>
+  </a>
 </main>
 <footer id="footer"></footer>
 <nav class="pager" id="pager" hidden>
@@ -200,7 +266,12 @@ const env = isLocalHost && params.get("env") === "local" ? LOCAL : PRODUCTION;
 const mapboxToken = (isLocalHost && params.get("mapbox_token")) || MAPBOX_TOKEN;
 const token = params.get("t");
 
-const isSpanish = (navigator.language || "es").toLowerCase().startsWith("es");
+const requestedLang = params.get("lang");
+const isSpanish = requestedLang ? requestedLang === "es" : (navigator.language || "es").toLowerCase().startsWith("es");
+const lang = isSpanish ? "es" : "en";
+const SOMADA_PAGE = `https://davidzomada.com/${lang}/work/somada/`;
+const MAKER_PAGE = `https://davidzomada.com/${lang}/`;
+const LIVE_WINDOW_MS = 3 * 24 * 60 * 60 * 1000;
 const L = isSpanish ? {
   notFound: "Este enlace no existe o se ha dejado de compartir.",
   failed: "No se ha podido cargar el viaje. Comprueba la conexión.",
@@ -208,9 +279,18 @@ const L = isSpanish ? {
   pages: n => n === 1 ? "1 página" : `${n} páginas`,
   stops: n => n === 1 ? "1 parada" : `${n} paradas`,
   updated: "Actualizado",
-  live: "Se actualiza solo",
-  footer: "Diario de viaje hecho con",
-  get: "Descarga Somada",
+  live: "En directo",
+  km: n => `${n} km`,
+  getApp: "Descargar",
+  brandBy: "diario de viaje",
+  ctaTitle: "Tu viaje también merece un mapa",
+  ctaText: "Con Somada cada parada es una página de diario, con fotos, sobre la ruta que recorres. Y puedes compartirla en directo, como esta.",
+  ctaStore: "Descargar en el App Store",
+  ctaFree: "Gratis · iPhone y iPad",
+  makerTitle: "Hecha por David Zomada",
+  makerText: "Desarrollador indie de apps iOS. Conoce mis proyectos y viajes.",
+  footer: "Viaje compartido con Somada",
+  otherLanguage: "English",
   trip: "Viaje",
   prev: "Anterior",
   next: "Siguiente",
@@ -225,9 +305,18 @@ const L = isSpanish ? {
   pages: n => n === 1 ? "1 page" : `${n} pages`,
   stops: n => n === 1 ? "1 stop" : `${n} stops`,
   updated: "Updated",
-  live: "Updates by itself",
-  footer: "Travel journal made with",
-  get: "Get Somada",
+  live: "Live",
+  km: n => `${n} km`,
+  getApp: "Get the app",
+  brandBy: "travel journal",
+  ctaTitle: "Your trip deserves a map too",
+  ctaText: "With Somada every stop becomes a journal page, with photos, on the route you travel. And you can share it live, like this one.",
+  ctaStore: "Download on the App Store",
+  ctaFree: "Free · iPhone and iPad",
+  makerTitle: "Made by David Zomada",
+  makerText: "Indie iOS developer. See my projects and trips.",
+  footer: "Trip shared with Somada",
+  otherLanguage: "Español",
   trip: "Trip",
   prev: "Previous",
   next: "Next",
@@ -236,7 +325,7 @@ const L = isSpanish ? {
   mapStyle: "Map style",
   styles: { standard: "Standard", monochrome: "Monochrome", satellite: "Satellite" },
 };
-document.documentElement.lang = isSpanish ? "es" : "en";
+document.documentElement.lang = lang;
 
 const $ = id => document.getElementById(id);
 function el(tag, attrs = {}, children = []) {
@@ -566,7 +655,11 @@ function setupMap() {
   const overview = el("button", { class: "map-button", type: "button", title: L.overview, "aria-label": L.overview },
     [el("span", { class: "icon", text: "fit_screen", "aria-hidden": "true" })]);
   overview.addEventListener("click", () => fitRoute(true));
-  $("map").append(overview, ...styleControls());
+  const brand = el("a", { class: "brand", href: SOMADA_PAGE }, [
+    el("img", { src: "/somada/trip/somada-icon.jpg", alt: "", width: "30", height: "30" }),
+    el("span", { text: "Somada" }), el("small", { text: L.brandBy }),
+  ]);
+  $("map").append(brand, overview, ...styleControls());
   // A new style drops the route's layers: draw them again once it has loaded.
   map.on("style.load", () => { mapReady = true; if (lastTrip) drawTrip(lastTrip); });
   map.on("zoom", updateVehicleVisibility);
@@ -705,14 +798,24 @@ function relativeTime(iso) {
   return rtf.format(Math.round(minutes / 1440), "day");
 }
 
+function routeKilometres(trip) {
+  let metres = 0;
+  for (const line of trip.lines) {
+    const coords = line.geometry?.coordinates || [];
+    for (let i = 1; i < coords.length; i++) metres += haversine(coords[i - 1], coords[i]);
+  }
+  return Math.round(metres / 1000);
+}
+
 function renderHeader(trip) {
   document.title = `${trip.title || L.trip} · Somada`;
   document.documentElement.style.setProperty("--route", trip.color || "#FFBC2D");
   $("title").textContent = [trip.emoji, trip.title || L.trip].filter(Boolean).join(" ");
-  $("meta").replaceChildren(
-    `${L.pages(trip.pages.length)} · ${L.stops(trip.stops.length)} · ${L.updated} ${relativeTime(trip.updated_at)} · `,
-    el("span", { class: "live", text: L.live }),
-  );
+  const km = routeKilometres(trip);
+  const parts = [L.pages(trip.pages.length), km > 0 ? L.km(new Intl.NumberFormat(lang).format(km)) : L.stops(trip.stops.length),
+    `${L.updated} ${relativeTime(trip.updated_at)}`];
+  const isLive = Date.now() - new Date(trip.updated_at) < LIVE_WINDOW_MS;
+  $("meta").replaceChildren(...(isLive ? [el("span", { class: "live", text: L.live }), " · "] : []), parts.join(" · "));
   $("sheet").hidden = false;
   $("error").hidden = true;
 }
@@ -733,7 +836,9 @@ function renderPage(direction) {
     cover = el("img", { class: "cover", src: page.photo_url, alt: "" });
     cover.addEventListener("error", () => cover.remove());
   }
-  const badge = el("div", { class: "badge", style: page.color ? `background:${page.color}` : null }, [pageIcon(page)]);
+  // With a cover, a photo badge would repeat it: show the emoji instead.
+  const icon = cover && page.icon_kind === "photo" ? document.createTextNode(page.emoji || "📍") : pageIcon(page);
+  const badge = el("div", { class: "badge", style: page.color ? `background:${page.color}` : null }, [icon]);
   const article = el("article", { class: "page" + (direction ? ` enter-${direction}` : "") }, [
     cover,
     el("div", { class: "body" }, [
@@ -851,7 +956,18 @@ $("page").addEventListener("touchend", e => {
   if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1);
 }, { passive: true });
 
-$("footer").append(`${L.footer} `, el("a", { href: APP_STORE_URL, text: "Somada" }), " · ", el("a", { href: APP_STORE_URL, text: L.get }));
+const otherLanguageURL = new URL(location.href);
+otherLanguageURL.searchParams.set("lang", isSpanish ? "en" : "es");
+$("footer").append(el("a", { href: SOMADA_PAGE, text: L.footer }), " · ", el("a", { href: otherLanguageURL.href, text: L.otherLanguage, hreflang: isSpanish ? "en" : "es" }));
+Object.assign($("get-app"), { href: APP_STORE_URL, textContent: L.getApp });
+$("cta-title").textContent = L.ctaTitle;
+$("cta-text").textContent = L.ctaText;
+$("cta-store").href = APP_STORE_URL;
+$("cta-store").textContent = L.ctaStore;
+$("cta-free").textContent = L.ctaFree;
+$("maker").href = MAKER_PAGE;
+$("maker-title").textContent = L.makerTitle;
+$("maker-text").textContent = L.makerText;
 setupMap();
 load();
 setInterval(() => { if (document.visibilityState === "visible") load(); }, REFRESH_MS);

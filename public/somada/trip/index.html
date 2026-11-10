@@ -946,7 +946,8 @@ function renderHeader(trip) {
   const km = routeKilometres(trip);
   const parts = [L.pages(trip.pages.length), km > 0 ? L.km(new Intl.NumberFormat(lang).format(km)) : L.stops(trip.stops.length)];
   if (!trip.pages.length) parts.push(`${L.updated} ${relativeTime(trip.updated_at)}`);
-  const isLive = Date.now() - new Date(trip.updated_at) < LIVE_WINDOW_MS;
+  // Live while the traveller keeps writing: the last page, or else the last change, is recent.
+  const isLive = isRecent(latestPage(trip)?.created_at || trip.updated_at);
   $("meta").replaceChildren(...(isLive ? [el("span", { class: "live", text: L.live }), " · "] : []), parts.join(" · "));
   renderAuthor(trip.author);
   renderExtras(trip);

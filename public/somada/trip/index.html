@@ -21,7 +21,7 @@
 <link rel="apple-touch-icon" href="/somada/trip/somada-icon.jpg">
 <link rel="icon" href="/favicon.svg">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,500,1,0&icon_names=agriculture,airport_shuttle,arrow_forward,chevron_left,chevron_right,directions_bike,directions_boat,directions_bus,directions_car,electric_scooter,fit_screen,flight,hiking,layers,local_shipping,moped,paragliding,sailing,scuba_diving,surfing,tram,train,two_wheeler&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,500,1,0&icon_names=agriculture,airport_shuttle,arrow_forward,chevron_left,chevron_right,directions_bike,directions_boat,directions_bus,directions_car,electric_scooter,first_page,fit_screen,flight,hiking,last_page,layers,local_shipping,moped,paragliding,sailing,scuba_diving,surfing,tram,train,two_wheeler&display=block">
 <style>
   :root {
     --bg: #F2F2F7;
@@ -105,38 +105,11 @@
   .author .avatar img { width: 100%; height: 100%; object-fit: cover; }
   .author span { font-size: 14px; color: var(--text-2); }
   .author strong { color: var(--text); }
-  .now-row {
-    display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 12px; padding: 10px 12px; border: 0; border-radius: 14px;
-    background: var(--bg); color: var(--text); font: inherit; text-align: left; cursor: pointer;
-  }
-  .now-row .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; background: #30D158; animation: pulse 1.6s ease-out infinite; }
-  .now-row .dot.past { background: var(--text-2); animation: none; }
-  .now-row div { flex: 1; min-width: 0; font-size: 14px; color: var(--text-2); line-height: 1.3; }
-  .now-row strong { display: block; color: var(--text); font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .now-row .icon { color: var(--text-2); font-size: 20px; }
-  details.collectibles { margin-top: 8px; border-radius: 14px; background: var(--bg); }
-  details.collectibles summary { list-style: none; padding: 10px 12px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-  details.collectibles summary::-webkit-details-marker { display: none; }
-  details.collectibles summary .icon { margin-left: auto; color: var(--text-2); font-size: 20px; transition: transform 0.2s; }
-  details.collectibles[open] summary .icon { transform: rotate(90deg); }
-  details.collectibles ul { list-style: none; margin: 0; padding: 0 8px 8px; }
-  details.collectibles li button { width: 100%; display: flex; align-items: center; gap: 10px; padding: 8px; border: 0; border-radius: 10px;
-    background: transparent; color: var(--text); font: 15px/1.25 inherit; text-align: left; cursor: pointer; }
-  details.collectibles li button:active { background: var(--sep); }
-  details.collectibles li small { display: block; color: var(--text-2); font-size: 13px; }
-  .chip-emoji { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 16px;
-    background: rgba(217, 98, 43, 0.16); }
-  .page-collectibles { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-  .page-collectibles a { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px 5px 5px; border-radius: 999px;
-    background: rgba(217, 98, 43, 0.14); color: var(--text); font-size: 14px; font-weight: 600; text-decoration: none; }
-  .page-collectibles .chip-emoji { width: 24px; height: 24px; font-size: 13px; background: #D9622B; }
   .pin.now::before { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 3px solid #30D158; animation: ring 1.8s ease-out infinite; }
-  .pin.now.past::before { border-color: var(--text-2); animation: none; opacity: 0.7; }
   @keyframes ring { 0% { transform: scale(0.85); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
   .pin .now-label { position: absolute; left: 50%; top: calc(100% + 8px); transform: translateX(-50%); white-space: nowrap;
     padding: 3px 8px; border-radius: 999px; background: #30D158; color: #000; font: 700 11px/1.2 -apple-system, sans-serif;
     text-transform: uppercase; letter-spacing: 0.04em; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3); pointer-events: none; }
-  .pin.past .now-label { background: var(--card); color: var(--text); }
 
   /* The app's brand, over the map, for readers who arrive without knowing it. */
   .brand {
@@ -206,6 +179,12 @@
   nav.pager button:disabled { opacity: 0.3; cursor: default; }
   nav.pager button:not(:disabled):active { background: var(--sep); }
   nav.pager .icon { font-size: 24px; }
+  nav.pager button.edge { width: 44px; padding: 0; justify-content: center; }
+  @media (max-width: 400px) {
+    nav.pager button:not(.edge) { padding: 0 8px; }
+    nav.pager .label { display: none; }
+    nav.pager .count { min-width: 56px; }
+  }
   nav.pager .count { min-width: 64px; text-align: center; color: var(--text-2); font-size: 15px; font-variant-numeric: tabular-nums; }
   .new-page { position: fixed; left: 50%; bottom: calc(max(16px, env(safe-area-inset-bottom)) + 64px); transform: translateX(-50%);
     z-index: 5; border: 0; border-radius: 999px; padding: 10px 16px; font: 600 15px/1 inherit; color: #000;
@@ -258,7 +237,6 @@
       </div>
       <a class="get-app" id="get-app"></a>
     </header>
-    <div id="trip-extras"></div>
   </div>
   <div id="page"></div>
   <div class="error" id="error" hidden></div>
@@ -277,9 +255,11 @@
 </main>
 <footer id="footer"></footer>
 <nav class="pager" id="pager" hidden>
-  <button id="prev" type="button"><span class="icon" aria-hidden="true">chevron_left</span><span id="prev-label"></span></button>
+  <button id="first" class="edge" type="button"><span class="icon" aria-hidden="true">first_page</span></button>
+  <button id="prev" type="button"><span class="icon" aria-hidden="true">chevron_left</span><span class="label" id="prev-label"></span></button>
   <span class="count" id="count"></span>
-  <button id="next" type="button"><span id="next-label"></span><span class="icon" aria-hidden="true">chevron_right</span></button>
+  <button id="next" type="button"><span class="label" id="next-label"></span><span class="icon" aria-hidden="true">chevron_right</span></button>
+  <button id="last" class="edge" type="button"><span class="icon" aria-hidden="true">last_page</span></button>
 </nav>
 <button class="new-page" id="new-page" type="button" hidden></button>
 
@@ -324,10 +304,6 @@ const L = isSpanish ? {
   live: "En directo",
   tripBy: "Viaje de",
   nowHere: "Ahora aquí",
-  lastStop: "Última parada",
-  nowRow: (place, when) => `${place} · ${when}`,
-  collectibles: n => n === 1 ? "1 coleccionable" : `${n} coleccionables`,
-  collectedHere: "Coleccionado aquí",
   km: n => `${n} km`,
   getApp: "Descargar",
   brandBy: "diario de viaje",
@@ -341,15 +317,13 @@ const L = isSpanish ? {
   otherLanguage: "English",
   trip: "Viaje",
   prev: "Anterior",
+  first: "Primera página",
+  last: "Última página",
   next: "Siguiente",
   newPages: n => n === 1 ? "1 página nueva" : `${n} páginas nuevas`,
   overview: "Ver toda la ruta",
   mapStyle: "Estilo del mapa",
   styles: { standard: "Estándar", monochrome: "Monocromo", satellite: "Satélite" },
-  kinds: { castle: "Castillo", palace: "Palacio", church: "Iglesia", mosque: "Mezquita", synagogue: "Sinagoga", temple: "Templo",
-    monastery: "Monasterio", museum: "Museo", theater: "Teatro", stadium: "Estadio", monument: "Monumento", statue: "Estatua",
-    tower: "Torre", bridge: "Puente", lighthouse: "Faro", square: "Plaza", ruins: "Yacimiento", park: "Parque", waterfall: "Cascada",
-    mountain: "Montaña", beach: "Playa", viewpoint: "Mirador" },
 } : {
   notFound: "This link doesn't exist or is no longer shared.",
   failed: "The trip couldn't be loaded. Check your connection.",
@@ -360,10 +334,6 @@ const L = isSpanish ? {
   live: "Live",
   tripBy: "Trip by",
   nowHere: "Here now",
-  lastStop: "Last stop",
-  nowRow: (place, when) => `${place} · ${when}`,
-  collectibles: n => n === 1 ? "1 collectible" : `${n} collectibles`,
-  collectedHere: "Collected here",
   km: n => `${n} km`,
   getApp: "Get the app",
   brandBy: "travel journal",
@@ -377,19 +347,14 @@ const L = isSpanish ? {
   otherLanguage: "Español",
   trip: "Trip",
   prev: "Previous",
+  first: "First page",
+  last: "Last page",
   next: "Next",
   newPages: n => n === 1 ? "1 new page" : `${n} new pages`,
   overview: "Show the whole route",
   mapStyle: "Map style",
   styles: { standard: "Standard", monochrome: "Monochrome", satellite: "Satellite" },
-  kinds: { castle: "Castle", palace: "Palace", church: "Church", mosque: "Mosque", synagogue: "Synagogue", temple: "Temple",
-    monastery: "Monastery", museum: "Museum", theater: "Theatre", stadium: "Stadium", monument: "Monument", statue: "Statue",
-    tower: "Tower", bridge: "Bridge", lighthouse: "Lighthouse", square: "Square", ruins: "Archaeological site", park: "Park",
-    waterfall: "Waterfall", mountain: "Mountain", beach: "Beach", viewpoint: "Viewpoint" },
 };
-const KIND_EMOJI = { castle: "🏰", palace: "🏯", church: "⛪", mosque: "🕌", synagogue: "🕍", temple: "🛕", monastery: "⛪",
-  museum: "🖼️", theater: "🎭", stadium: "🏟️", monument: "🗿", statue: "🗽", tower: "🗼", bridge: "🌉", lighthouse: "🔦",
-  square: "⛲", ruins: "🏛️", park: "🌳", waterfall: "💧", mountain: "⛰️", beach: "🏖️", viewpoint: "🔭" };
 document.documentElement.lang = lang;
 
 const $ = id => document.getElementById(id);
@@ -843,11 +808,10 @@ function paintPins() {
     node.style.zIndex = selected ? "10" : "";
     node.style.setProperty("--pin", page.color || "#FFBC2D");
     const circle = el("div", { class: "circle" }, [pageIcon(page)]);
-    const isLatest = latest && id === latest.id;
-    node.classList.toggle("now", !!isLatest);
-    node.classList.toggle("past", !!isLatest && !recent);
-    if (isLatest && !selected) node.style.zIndex = "5";
-    const label = isLatest ? el("div", { class: "now-label", text: recent ? L.nowHere : L.lastStop }) : null;
+    const isNow = recent && id === latest.id;
+    node.classList.toggle("now", !!isNow);
+    if (isNow && !selected) node.style.zIndex = "5";
+    const label = isNow ? el("div", { class: "now-label", text: L.nowHere }) : null;
     node.replaceChildren(...(selected ? [el("div", { class: "anchor" }), el("div", { class: "head" }, [circle])] : [circle]), ...(label ? [label] : []));
   });
 }
@@ -901,48 +865,10 @@ function renderAuthor(author) {
   box.hidden = false;
 }
 
-function renderExtras(trip) {
-  const extras = [];
-  const latest = latestPage(trip);
-  if (latest) {
-    const recent = isRecent(latest.created_at);
-    const row = el("button", { class: "now-row", type: "button" }, [
-      el("span", { class: "dot" + (recent ? "" : " past"), "aria-hidden": "true" }),
-      el("div", {}, [
-        document.createTextNode(recent ? L.nowHere : L.lastStop),
-        el("strong", { text: L.nowRow([latest.emoji, latest.title].filter(Boolean).join(" ") || L.trip, relativeTime(latest.created_at)) }),
-      ]),
-      el("span", { class: "icon", text: "chevron_right", "aria-hidden": "true" }),
-    ]);
-    row.addEventListener("click", () => select(latest.id, { fly: true, direction: "next" }));
-    extras.push(row);
-  }
-  const collected = trip.pages.flatMap(page => (page.collectibles || []).map(c => ({ ...c, page })));
-  if (collected.length) {
-    const list = el("ul", {}, collected.map(c => {
-      const button = el("button", { type: "button" }, [
-        el("span", { class: "chip-emoji", text: KIND_EMOJI[c.kind] || "🏅", "aria-hidden": "true" }),
-        el("span", {}, [document.createTextNode(c.name), el("small", { text: [L.kinds[c.kind], c.page.title].filter(Boolean).join(" · ") })]),
-      ]);
-      button.addEventListener("click", () => select(c.page.id, { fly: true }));
-      return el("li", {}, [button]);
-    }));
-    const wasOpen = document.querySelector("details.collectibles")?.open;
-    const details = el("details", { class: "collectibles" }, [
-      el("summary", {}, [el("span", { text: "🏅", "aria-hidden": "true" }), document.createTextNode(L.collectibles(collected.length)),
-        el("span", { class: "icon", text: "chevron_right", "aria-hidden": "true" })]),
-      list,
-    ]);
-    details.open = !!wasOpen;
-    extras.push(details);
-  }
-  $("trip-extras").replaceChildren(...extras);
-}
-
 function renderHeader(trip) {
   document.title = `${trip.title || L.trip} · Somada`;
   document.documentElement.style.setProperty("--route", trip.color || "#FFBC2D");
-  $("title").textContent = [trip.emoji, trip.title || L.trip].filter(Boolean).join(" ");
+  $("title").textContent = trip.title || L.trip;
   const km = routeKilometres(trip);
   const parts = [L.pages(trip.pages.length), km > 0 ? L.km(new Intl.NumberFormat(lang).format(km)) : L.stops(trip.stops.length)];
   if (!trip.pages.length) parts.push(`${L.updated} ${relativeTime(trip.updated_at)}`);
@@ -950,7 +876,6 @@ function renderHeader(trip) {
   const isLive = isRecent(latestPage(trip)?.created_at || trip.updated_at);
   $("meta").replaceChildren(...(isLive ? [el("span", { class: "live", text: L.live }), " · "] : []), parts.join(" · "));
   renderAuthor(trip.author);
-  renderExtras(trip);
   $("sheet").hidden = false;
   $("error").hidden = true;
 }
@@ -984,27 +909,15 @@ function renderPage(direction) {
           el("div", { class: "sub", text: [page.date, page.sub_title].filter(Boolean).join(" · ") }),
         ]),
       ]),
-      collectiblesOf(page),
       renderContent(page.content),
     ]),
   ]);
   container.replaceChildren(article);
 
   $("pager").hidden = false;
-  $("prev").disabled = index <= 0;
-  $("next").disabled = index >= trip.pages.length - 1;
+  $("first").disabled = $("prev").disabled = index <= 0;
+  $("last").disabled = $("next").disabled = index >= trip.pages.length - 1;
   $("count").textContent = `${index + 1} / ${trip.pages.length}`;
-}
-
-function collectiblesOf(page) {
-  const items = page.collectibles || [];
-  if (!items.length) return null;
-  return el("div", { class: "page-collectibles", "aria-label": L.collectedHere }, items.map(c =>
-    el("a", { href: `https://www.wikidata.org/wiki/${encodeURIComponent(c.wikidata_id)}`, target: "_blank", rel: "noopener",
-      title: `${L.collectedHere} · ${L.kinds[c.kind] || ""}` }, [
-      el("span", { class: "chip-emoji", text: KIND_EMOJI[c.kind] || "🏅", "aria-hidden": "true" }),
-      document.createTextNode(c.name),
-    ])));
 }
 
 function select(pageId, { fly = false, direction = null, scroll = false } = {}) {
@@ -1015,6 +928,12 @@ function select(pageId, { fly = false, direction = null, scroll = false } = {}) 
   paintPins();
   if (fly) flyToSelected();
   if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function jump(toEnd) {
+  const pages = lastTrip?.pages || [];
+  const target = toEnd ? pages[pages.length - 1] : pages[0];
+  if (target && target.id !== selectedId) select(target.id, { fly: true, direction: toEnd ? "next" : "prev", scroll: true });
 }
 
 function step(delta) {
@@ -1038,6 +957,10 @@ function showError(message) {
 
 let knownPageIds = null;
 
+const VISITED_KEY = `somada.trip.visited.${token}`;
+const isReturningReader = (() => { try { return localStorage.getItem(VISITED_KEY) === "1"; } catch { return false; } })();
+function markVisited() { try { localStorage.setItem(VISITED_KEY, "1"); } catch {} }
+
 async function load() {
   if (!token) { showError(L.notFound); return; }
   try {
@@ -1058,12 +981,14 @@ async function load() {
     lastTrip = trip;
     renderHeader(trip);
 
-    // Opens on the page in the link, or else on the one written last; a refresh keeps the reader's page.
+    // Opens on the page in the link; otherwise a first visit starts the story from the beginning
+    // and a returning reader lands on the last page. A refresh keeps the reader's page.
     const ids = trip.pages.map(p => p.id);
     if (!ids.includes(selectedId)) {
       const fromHash = decodeURIComponent(location.hash.slice(1));
-      selectedId = ids.includes(fromHash) ? fromHash : latestPage(trip)?.id || ids[ids.length - 1] || null;
+      selectedId = ids.includes(fromHash) ? fromHash : (isReturningReader ? ids[ids.length - 1] : ids[0]) || null;
     }
+    markVisited();
     const added = knownPageIds ? ids.filter(id => !knownPageIds.has(id)) : [];
     knownPageIds = new Set(ids);
     if (added.length) {
@@ -1087,9 +1012,17 @@ $("prev-label").textContent = L.prev;
 $("next-label").textContent = L.next;
 $("prev").addEventListener("click", () => step(-1));
 $("next").addEventListener("click", () => step(1));
+$("first").addEventListener("click", () => jump(false));
+$("last").addEventListener("click", () => jump(true));
+for (const [id, label] of [["first", L.first], ["last", L.last], ["prev", L.prev], ["next", L.next]]) {
+  $(id).setAttribute("aria-label", label);
+  $(id).title = label;
+}
 document.addEventListener("keydown", event => {
   if (event.key === "ArrowLeft") step(-1);
   if (event.key === "ArrowRight") step(1);
+  if (event.key === "Home") jump(false);
+  if (event.key === "End") jump(true);
 });
 
 // A horizontal swipe on the page turns it, as in the app.

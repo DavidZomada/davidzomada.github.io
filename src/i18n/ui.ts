@@ -200,7 +200,7 @@ export const ui = {
       privacy: [
         {
           title: '1. Who handles your data',
-          body: 'The controller is David Zomada, Somada’s independent developer. This policy explains what data the app handles, why, who it is shared with and what rights you have. Last updated: November 5, 2026.',
+          body: 'The controller is David Zomada, Somada’s independent developer. This policy explains what data the app handles, why, who it is shared with and what rights you have. Last updated: November 11, 2026.',
         },
         {
           title: '2. Data we collect',
@@ -216,26 +216,30 @@ export const ui = {
         },
         {
           title: '5. Where it is stored and for how long',
-          body: 'Your account and journal are stored on the servers of Supabase, our database provider, located in Singapore, and on your device so the app works offline. Your journal is private: other users cannot see it. As the developer, I only access your data when needed to give you support, fix a bug or comply with the law. We keep it while you have an account; when you delete it, it is removed from our servers, and backups are deleted in their usual cycle.',
+          body: 'Your account and journal are stored on the servers of Supabase, our database provider, located in Singapore, and on your device so the app works offline. Your journal is private: other users cannot see it, unless you share a route with a public link (section 6). As the developer, I only access your data when needed to give you support, fix a bug or comply with the law. We keep it while you have an account; when you delete it, it is removed from our servers, and backups are deleted in their usual cycle.',
         },
         {
-          title: '6. Service providers',
-          body: 'Somada uses these services, which only receive what they need for their job:\n• Supabase: database, photos, sign-in and the sign-in email.\n• Mapbox: maps and place search. It receives what you search for, the map area you view and technical data; its SDK may send anonymous usage and location data to improve its maps.\n• Apple and Google: only if you choose to sign in with them.\n• Wikipedia and Wikidata: they receive a place’s name or position to show its information and photo.\n• TelemetryDeck: anonymous analytics. The device identifier is hashed on the device before it is sent, and it never receives your name, email, account, journal or location.\nYour data is stored outside the European Economic Area (Supabase, in Singapore) and some providers, such as Mapbox, process it in the US. These transfers use the safeguards the GDPR requires, such as the European Commission’s standard contractual clauses. Somada does not currently use any artificial intelligence services.',
+          title: '6. Public trip links',
+          body: 'If you choose to share a route, Somada creates a link that anyone who has it can open in a browser, without the app and without signing in.\n• What it shows: the route, the pages of its stops with their text, photos, exact location, date and time, the places you collected, and your name and profile photo. It never shows your email or your other routes and pages.\n• Legal basis: providing the service you request when you share the route.\n• How long: until you stop sharing it, delete the route or delete your account. If you share it again, it gets a new link.\n• Who can see it: anyone you send the link to, and anyone they forward it to. The page asks search engines not to index it.\n• You are responsible for what you publish: do not share photos or details of other people without their permission. Anyone can report a trip from the link at the bottom of the page, and we may remove links that break the law or these rules.\n• Readers of the link: the trip page does not use cookies or keep any data about them; it only remembers their map style in their own browser. To show the trip, their IP address reaches GitHub (which hosts the page), Supabase (trip data and photos) and Mapbox (the map, including its usage events).\nA photo’s web address may keep working for someone who saved it, even after you stop sharing.',
         },
         {
-          title: '7. Your rights',
+          title: '7. Service providers',
+          body: 'Somada uses these services, which only receive what they need for their job:\n• Supabase: database, photos, sign-in and the sign-in email.\n• Mapbox: maps and place search. It receives what you search for, the map area you view and technical data; its SDK may send anonymous usage and location data to improve its maps.\n• GitHub: hosts the public trip page and receives the IP address of whoever opens a link.\n• Apple and Google: only if you choose to sign in with them.\n• Wikipedia and Wikidata: they receive a place’s name or position to show its information and photo.\n• TelemetryDeck: anonymous analytics. The device identifier is hashed on the device before it is sent, and it never receives your name, email, account, journal or location.\nYour data is stored outside the European Economic Area (Supabase, in Singapore) and some providers, such as Mapbox, process it in the US. These transfers use the safeguards the GDPR requires, such as the European Commission’s standard contractual clauses. Somada does not currently use any artificial intelligence services.',
+        },
+        {
+          title: '8. Your rights',
           body: 'You can ask to access, correct or delete your data, restrict or object to its processing, and receive a copy in a commonly used format. Write to the contact email and we will reply within one month. If you think we have not handled your request properly, you can complain to the Spanish Data Protection Agency (aepd.es) or the authority in your country.',
         },
         {
-          title: '8. Account deletion',
+          title: '9. Account deletion',
           body: 'You can delete your account and all its data from the app’s settings (Delete account) or by writing to us. Deletion is permanent.',
         },
         {
-          title: '9. Changes',
+          title: '10. Changes',
           body: 'If we change this policy, we will update the date in section 1 and say so in the app or on this page.',
         },
         {
-          title: '10. Contact',
+          title: '11. Contact',
           body: 'For any privacy questions, write to us at:',
         },
       ],
@@ -491,7 +495,7 @@ export const ui = {
       privacy: [
         {
           title: '1. Quién trata tus datos',
-          body: 'El responsable es David Zomada, desarrollador independiente de Somada. Esta política explica qué datos trata la app, para qué, con quién se comparten y qué derechos tienes. Última actualización: 5 de noviembre de 2026.',
+          body: 'El responsable es David Zomada, desarrollador independiente de Somada. Esta política explica qué datos trata la app, para qué, con quién se comparten y qué derechos tienes. Última actualización: 11 de noviembre de 2026.',
         },
         {
           title: '2. Datos que recogemos',
@@ -507,26 +511,30 @@ export const ui = {
         },
         {
           title: '5. Dónde se guardan y cuánto tiempo',
-          body: 'Tu cuenta y tu diario se guardan en los servidores de Supabase, nuestro proveedor de base de datos, situados en Singapur, y en tu dispositivo para que la app funcione sin conexión. Tu diario es privado: otros usuarios no pueden verlo. Como desarrollador, solo accedo a tus datos cuando hace falta para darte soporte, corregir un error o cumplir la ley. Los conservamos mientras tengas la cuenta; al borrarla se eliminan de nuestros servidores, y las copias de seguridad se borran en su ciclo habitual.',
+          body: 'Tu cuenta y tu diario se guardan en los servidores de Supabase, nuestro proveedor de base de datos, situados en Singapur, y en tu dispositivo para que la app funcione sin conexión. Tu diario es privado: otros usuarios no pueden verlo, salvo que compartas una ruta con un enlace público (apartado 6). Como desarrollador, solo accedo a tus datos cuando hace falta para darte soporte, corregir un error o cumplir la ley. Los conservamos mientras tengas la cuenta; al borrarla se eliminan de nuestros servidores, y las copias de seguridad se borran en su ciclo habitual.',
         },
         {
-          title: '6. Proveedores',
-          body: 'Somada usa estos servicios, que solo reciben lo necesario para su función:\n• Supabase: base de datos, fotos, inicio de sesión y envío del email de acceso.\n• Mapbox: mapas y búsqueda de lugares. Recibe lo que buscas, la zona del mapa que ves y datos técnicos; su SDK puede enviar datos de uso y de ubicación anónimos para mejorar sus mapas.\n• Apple y Google: solo si eliges iniciar sesión con ellos.\n• Wikipedia y Wikidata: reciben el nombre o la posición de un lugar para mostrar su información y su foto.\n• TelemetryDeck: analítica anónima. El identificador del dispositivo se cifra en el propio dispositivo antes de enviarse, y no recibe tu nombre, email, cuenta, diario ni ubicación.\nTus datos se guardan fuera del Espacio Económico Europeo (Supabase, en Singapur) y algunos proveedores, como Mapbox, los tratan en EE. UU. Estas transferencias se hacen con las garantías que exige el RGPD, como las cláusulas contractuales tipo de la Comisión Europea. Somada no usa ahora mismo servicios de inteligencia artificial.',
+          title: '6. Enlaces públicos de viajes',
+          body: 'Si decides compartir una ruta, Somada crea un enlace que cualquiera que lo tenga puede abrir en el navegador, sin la app y sin iniciar sesión.\n• Qué muestra: la ruta, las páginas de sus paradas con su texto, fotos, ubicación exacta, fecha y hora, los lugares que has coleccionado, y tu nombre y foto de perfil. Nunca muestra tu email ni tus otras rutas y páginas.\n• Base legal: la prestación del servicio que pides al compartir la ruta.\n• Cuánto dura: hasta que dejas de compartirla, borras la ruta o borras tu cuenta. Si vuelves a compartirla, tendrá un enlace nuevo.\n• Quién puede verlo: cualquiera a quien le envíes el enlace, y a quien esa persona se lo reenvíe. La página pide a los buscadores que no la indexen.\n• Eres responsable de lo que publicas: no compartas fotos ni datos de otras personas sin su permiso. Cualquiera puede denunciar un viaje desde el enlace al pie de la página, y podemos retirar los enlaces que incumplan la ley o estas normas.\n• Quien abre el enlace: la página del viaje no usa cookies ni guarda datos suyos; solo recuerda el estilo del mapa en su propio navegador. Para mostrar el viaje, su dirección IP llega a GitHub (que aloja la página), Supabase (datos y fotos del viaje) y Mapbox (el mapa, incluidos sus eventos de uso).\nLa dirección web de una foto puede seguir funcionando para quien la haya guardado, aunque dejes de compartir.',
         },
         {
-          title: '7. Tus derechos',
+          title: '7. Proveedores',
+          body: 'Somada usa estos servicios, que solo reciben lo necesario para su función:\n• Supabase: base de datos, fotos, inicio de sesión y envío del email de acceso.\n• Mapbox: mapas y búsqueda de lugares. Recibe lo que buscas, la zona del mapa que ves y datos técnicos; su SDK puede enviar datos de uso y de ubicación anónimos para mejorar sus mapas.\n• GitHub: aloja la página pública del viaje y recibe la dirección IP de quien abre un enlace.\n• Apple y Google: solo si eliges iniciar sesión con ellos.\n• Wikipedia y Wikidata: reciben el nombre o la posición de un lugar para mostrar su información y su foto.\n• TelemetryDeck: analítica anónima. El identificador del dispositivo se cifra en el propio dispositivo antes de enviarse, y no recibe tu nombre, email, cuenta, diario ni ubicación.\nTus datos se guardan fuera del Espacio Económico Europeo (Supabase, en Singapur) y algunos proveedores, como Mapbox, los tratan en EE. UU. Estas transferencias se hacen con las garantías que exige el RGPD, como las cláusulas contractuales tipo de la Comisión Europea. Somada no usa ahora mismo servicios de inteligencia artificial.',
+        },
+        {
+          title: '8. Tus derechos',
           body: 'Puedes pedir acceso a tus datos, corregirlos, borrarlos, limitar su tratamiento u oponerte a él, y recibir una copia en un formato de uso común. Escríbenos al email de contacto y te responderemos en un plazo máximo de un mes. Si crees que no hemos atendido bien tu solicitud, puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es) o la autoridad de tu país.',
         },
         {
-          title: '8. Eliminación de la cuenta',
+          title: '9. Eliminación de la cuenta',
           body: 'Puedes borrar tu cuenta y todos sus datos desde los ajustes de la app (Eliminar cuenta) o escribiéndonos. El borrado es definitivo.',
         },
         {
-          title: '9. Cambios',
+          title: '10. Cambios',
           body: 'Si cambiamos esta política, actualizaremos la fecha del apartado 1 y lo indicaremos en la app o en esta página.',
         },
         {
-          title: '10. Contacto',
+          title: '11. Contacto',
           body: 'Para cualquier pregunta sobre privacidad, escríbenos a:',
         },
       ],

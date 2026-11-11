@@ -291,6 +291,7 @@ const token = params.get("t");
 const requestedLang = params.get("lang");
 const isSpanish = requestedLang ? requestedLang === "es" : (navigator.language || "es").toLowerCase().startsWith("es");
 const lang = isSpanish ? "es" : "en";
+const REPORT_EMAIL = "david.zomada@gmail.com";
 const SOMADA_PAGE = `https://davidzomada.com/${lang}/work/somada/`;
 const MAKER_PAGE = `https://davidzomada.com/${lang}/`;
 const LIVE_WINDOW_MS = 3 * 24 * 60 * 60 * 1000;
@@ -314,6 +315,9 @@ const L = isSpanish ? {
   makerTitle: "Hecha por David Zomada",
   makerText: "Desarrollador indie de apps iOS. Conoce mis proyectos y viajes.",
   footer: "Viaje compartido con Somada",
+  report: "Denunciar este viaje",
+  reportSubject: "Denunciar viaje",
+  reportBody: "Cuéntanos qué contenido (página o foto) y por qué debería retirarse:\n\n",
   otherLanguage: "English",
   trip: "Viaje",
   prev: "Anterior",
@@ -344,6 +348,9 @@ const L = isSpanish ? {
   makerTitle: "Made by David Zomada",
   makerText: "Indie iOS developer. See my projects and trips.",
   footer: "Trip shared with Somada",
+  report: "Report this trip",
+  reportSubject: "Report trip",
+  reportBody: "Tell us which content (page or photo) and why it should be removed:\n\n",
   otherLanguage: "Español",
   trip: "Trip",
   prev: "Previous",
@@ -1039,6 +1046,10 @@ $("page").addEventListener("touchend", e => {
 const otherLanguageURL = new URL(location.href);
 otherLanguageURL.searchParams.set("lang", isSpanish ? "en" : "es");
 $("footer").append(el("a", { href: SOMADA_PAGE, text: L.footer }), " · ", el("a", { href: otherLanguageURL.href, text: L.otherLanguage, hreflang: isSpanish ? "en" : "es" }));
+if (token) {
+  const reportURL = `mailto:${REPORT_EMAIL}?subject=${encodeURIComponent(`${L.reportSubject} ${token}`)}&body=${encodeURIComponent(`${L.reportBody}${location.href}`)}`;
+  $("footer").append(" · ", el("a", { href: reportURL, text: L.report }));
+}
 Object.assign($("get-app"), { href: APP_STORE_URL, textContent: L.getApp });
 $("cta-title").textContent = L.ctaTitle;
 $("cta-text").textContent = L.ctaText;

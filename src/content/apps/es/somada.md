@@ -7,7 +7,7 @@ year: 2025
 platform: iOS y iPadOS
 status: En el App Store
 role: ''
-storeUrl: https://apps.apple.com/es/app/somada/id6740721557
+storeUrl: https://apps.apple.com/es/app/somada/id6740721557?pt=126727728&ct=bio&mt=8
 order: 1
 points:
   - Un diario geolocalizado; cada página es un pin en el mundo

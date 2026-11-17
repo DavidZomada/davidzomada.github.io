@@ -7,7 +7,7 @@ year: 2025
 platform: iOS and iPadOS
 status: On the App Store
 role: ''
-storeUrl: https://apps.apple.com/app/somada/id6740721557?pt=126727728&ct=bio&mt=8
+storeUrl: https://apps.apple.com/app/somada/id6740721557?pt=126727728&ct=bio-web&mt=8
 order: 1
 points:
   - A geolocated journal; each page is a pin on the world

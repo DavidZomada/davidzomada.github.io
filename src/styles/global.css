@@ -1516,6 +1516,54 @@ button:hover {
   scrollbar-color: var(--line) transparent;
 }
 
+.gallery[hidden] {
+  display: none;
+}
+
+.device-switch {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 5rem;
+}
+
+.device-switch [role='tab'] {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.45rem 1.05rem;
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+.device-switch [role='tab']:hover {
+  color: var(--ink);
+}
+
+.device-switch [role='tab'][aria-selected='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+.device-switch [role='tab']:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.device-switch + .gallery,
+.device-switch ~ .gallery {
+  margin-top: 0.75rem;
+}
+
+.gallery-ipad figure {
+  flex-basis: min(82vw, 24rem);
+  width: min(82vw, 24rem);
+}
+
 .gallery::-webkit-scrollbar {
   height: 6px;
 }

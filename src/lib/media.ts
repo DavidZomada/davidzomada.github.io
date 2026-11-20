@@ -1,97 +1,91 @@
 import type { ImageMetadata } from 'astro';
 import type { Locale } from '../site';
 import logo from '../../Photos/Somada/Logo/Icon 2.jpg';
-import shot0 from '../../Photos/Somada/images/somada_image_0.png';
-import shot1 from '../../Photos/Somada/images/somada_image_1.png';
-import shot2 from '../../Photos/Somada/images/somada_image_2.png';
-import shot3 from '../../Photos/Somada/images/somada_image_3.png';
-import shot4 from '../../Photos/Somada/images/somada_image_4.png';
-import shot5 from '../../Photos/Somada/images/somada_image_5.png';
-import shot6 from '../../Photos/Somada/images/somada_image_6.png';
-import shot7 from '../../Photos/Somada/images/somada_image_7.png';
-import shot8 from '../../Photos/Somada/images/somada_image_8.png';
+
+export type Device = 'iphone' | 'ipad';
 
 export type Shot = {
   src: ImageMetadata;
+  alt: string;
+};
+
+type Screen = {
+  key: string;
   alt: Record<Locale, string>;
 };
 
-const shots: Shot[] = [
+// Store screenshots, one file per device and locale: Photos/Somada/screens/<device>/<locale>-<key>.jpg
+const screens: Screen[] = [
   {
-    src: shot0,
+    key: 'intro',
     alt: {
-      en: 'Somada globe with photo pins across Africa and the Atlantic',
-      es: 'Globo de Somada con fotos sobre África y el Atlántico',
+      en: 'Somada, your travel journal on a map: a globe full of pins',
+      es: 'Somada, tu diario de viajes en el mapa: un globo lleno de pines',
     },
   },
   {
-    src: shot1,
+    key: 'write',
     alt: {
-      en: 'A Somada route through Colombia with the Bogotá stop open',
-      es: 'Una ruta de Somada por Colombia con la parada de Bogotá abierta',
+      en: 'Write your stories: a journal page with photos pinned to the map',
+      es: 'Escribe tus historias: una página del diario con fotos en el mapa',
     },
   },
   {
-    src: shot2,
+    key: 'track',
     alt: {
-      en: 'The Bogotá journal page in Somada, with photos and notes',
-      es: 'La página del diario de Bogotá en Somada, con fotos y notas',
+      en: 'Track your steps: a route drawn stop by stop with its vehicle and color',
+      es: 'Traza tus pasos: una ruta dibujada parada a parada con su vehículo y color',
     },
   },
   {
-    src: shot3,
+    key: 'share',
     alt: {
-      en: 'The Inírida stop on a Somada map, with its photo open',
-      es: 'La parada de Inírida en el mapa de Somada, con su foto abierta',
+      en: 'Share your trip: the public trip link open in the browser, live',
+      es: 'Comparte tu viaje: el enlace público del viaje abierto en el navegador, en directo',
     },
   },
   {
-    src: shot4,
+    key: 'flyover',
     alt: {
-      en: 'The Inírida journal page in Somada',
-      es: 'La página del diario de Inírida en Somada',
+      en: 'Generate a flyover video of your route to share on social media',
+      es: 'Genera un vídeo sobrevolando tu ruta para compartir en redes sociales',
     },
   },
   {
-    src: shot5,
+    key: 'collect',
     alt: {
-      en: 'Choosing a photo and a color for a Somada pin',
-      es: 'Eligiendo una foto y un color para un pin de Somada',
-    },
-  },
-  {
-    src: shot6,
-    alt: {
-      en: 'A Somada route listing its stops, from Bogotá to Mavecure',
-      es: 'Una ruta de Somada con sus paradas, de Bogotá a Mavecure',
-    },
-  },
-  {
-    src: shot7,
-    alt: {
-      en: 'Choosing how a leg of the route was traveled in Somada',
-      es: 'Eligiendo cómo se recorrió un tramo de la ruta en Somada',
-    },
-  },
-  {
-    src: shot8,
-    alt: {
-      en: 'Somada map settings for style, time of day, and labels',
-      es: 'Ajustes del mapa de Somada: estilo, momento del día y etiquetas',
+      en: 'Collect trophies: Angkor Wat in 3D after writing a page there',
+      es: 'Colecciona trofeos: Angkor Wat en 3D tras escribir una página allí',
     },
   },
 ];
 
-export const appMedia: Record<
-  string,
-  { cover: ImageMetadata; coverAlt: Record<Locale, string>; shots: Shot[] }
-> = {
+const files = import.meta.glob<{ default: ImageMetadata }>('../../Photos/Somada/screens/*/*.jpg', {
+  eager: true,
+});
+
+function shotsFor(device: Device, locale: Locale): Shot[] {
+  return screens.map((screen) => {
+    const path = `../../Photos/Somada/screens/${device}/${locale}-${screen.key}.jpg`;
+    const file = files[path];
+    if (!file) throw new Error(`Missing screenshot ${path}`);
+    return { src: file.default, alt: screen.alt[locale] };
+  });
+}
+
+export type AppMedia = {
+  cover: ImageMetadata;
+  coverAlt: Record<Locale, string>;
+  shots: (device: Device, locale: Locale) => Shot[];
+};
+
+export const appMedia: Record<string, AppMedia> = {
   somada: {
     cover: logo,
     coverAlt: {
       en: 'Somada app icon',
       es: 'Icono de la app Somada',
     },
-    shots,
+    shots: shotsFor,
   },
 };

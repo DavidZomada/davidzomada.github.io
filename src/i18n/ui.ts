@@ -168,6 +168,7 @@ export const ui = {
       start: 'Start journaling for free',
       support: 'Support',
       includes: 'What it makes easier',
+      devicesLabel: 'Screenshots by device',
       metaTitle: (name: string) => `${name} — David Zomada`,
     },
     privacy: {
@@ -187,12 +188,13 @@ export const ui = {
         'Welcome to the support page for Somada, your personalized travel journal. Here you’ll find our Privacy Policy, Terms & Conditions, and contact information.',
       aboutTitle: 'About Somada',
       about:
-        'Somada helps you plan, track, and draw your backpacking adventures. Create your own route, add notes and photos, and keep a visual journal of every step.',
+        'Somada is your travel journal on a map, on iPhone, iPad and Mac. Write pages with photos where they happened, draw the routes you took, share a trip with a live link and turn it into a flyover video.',
       features: [
-        'Free-draw travel routes on the map',
-        'Add notes, photos, and locations to each day',
-        'View your trip timeline and maps',
-        'Your journal stays private: only you can see it',
+        'Write journal pages with photos, pinned to the place where they happened',
+        'Draw your routes stop by stop, with the vehicle you took on each leg',
+        'Share a trip with a public link that friends and family follow live in the browser',
+        'Turn a route into a flyover video to share on social media',
+        'Your journal stays private unless you decide to share a trip',
       ],
       helpTitle: 'Need help?',
       help: 'If you have questions or wish to delete your account, contact us at:',
@@ -463,6 +465,7 @@ export const ui = {
       start: 'Empieza a escribir tu diario gratis',
       support: 'Soporte',
       includes: 'Qué facilita',
+      devicesLabel: 'Capturas por dispositivo',
       metaTitle: (name: string) => `${name} — David Zomada`,
     },
     privacy: {
@@ -482,12 +485,13 @@ export const ui = {
         'Bienvenido a la página de soporte de Somada, tu diario de viaje personal. Aquí encontrarás la política de privacidad, los términos y condiciones, y la información de contacto.',
       aboutTitle: 'Sobre Somada',
       about:
-        'Somada te ayuda a planificar, seguir y dibujar tus rutas de mochilero. Crea tu propia ruta, añade notas y fotos, y guarda un diario visual de cada paso.',
+        'Somada es tu diario de viajes en el mapa, en iPhone, iPad y Mac. Escribe páginas con fotos donde pasaron, dibuja las rutas que hiciste, comparte un viaje con un enlace en directo y conviértelo en un vídeo sobrevolando la ruta.',
       features: [
-        'Dibuja a mano las rutas del viaje sobre el mapa',
-        'Añade notas, fotos y lugares a cada día',
-        'Consulta la cronología y los mapas del viaje',
-        'Tu diario es privado: solo lo ves tú',
+        'Escribe páginas del diario con fotos, fijadas en el lugar donde pasaron',
+        'Dibuja tus rutas parada a parada, con el vehículo de cada tramo',
+        'Comparte un viaje con un enlace público que familia y amigos siguen en directo desde el navegador',
+        'Convierte una ruta en un vídeo sobrevolándola para compartir en redes sociales',
+        'Tu diario es privado salvo que decidas compartir un viaje',
       ],
       helpTitle: '¿Necesitas ayuda?',
       help: 'Si tienes preguntas o quieres eliminar tu cuenta, escríbenos a:',

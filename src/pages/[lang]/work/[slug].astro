@@ -4,6 +4,7 @@ import Base from '../../../layouts/Base.astro';
 import { isLocale, locales, type Locale } from '../../../site';
 import { useUi } from '../../../i18n/ui';
 import { getApps, mediaFor, render } from '../../../lib/apps';
+import type { Device } from '../../../lib/media';
 
 export async function getStaticPaths() {
   const paths = [];
@@ -31,6 +32,10 @@ if (!app) {
 const t = useUi(locale);
 const media = mediaFor(app.data.appId);
 const { Content } = await render(app);
+const devices: { id: Device; label: string; widths: number[]; sizes: string }[] = [
+  { id: 'iphone', label: 'iPhone', widths: [360, 540, 720], sizes: '16.5rem' },
+  { id: 'ipad', label: 'iPad', widths: [480, 720, 960], sizes: '24rem' },
+];
 ---
 
 <Base locale={locale} title={t.project.metaTitle(app.data.title)} description={app.data.summary}>
@@ -58,21 +63,46 @@ const { Content } = await render(app);
       </div>
     </div>
 
-    <div class="gallery" aria-label={app.data.title}>
+    <div class="wrap device-switch" role="tablist" aria-label={t.project.devicesLabel}>
       {
-        media.shots.map((shot, index) => (
-          <figure>
-            <Image
-              src={shot.src}
-              alt={shot.alt[locale]}
-              widths={[360, 540, 720]}
-              sizes="16.5rem"
-              loading={index === 0 ? 'eager' : 'lazy'}
-            />
-          </figure>
+        devices.map((device, index) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${device.id}`}
+            aria-controls={`gallery-${device.id}`}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            tabindex={index === 0 ? 0 : -1}
+          >
+            {device.label}
+          </button>
         ))
       }
     </div>
+
+    {
+      devices.map((device, deviceIndex) => (
+        <div
+          class={`gallery gallery-${device.id}`}
+          id={`gallery-${device.id}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${device.id}`}
+          hidden={deviceIndex !== 0}
+        >
+          {media.shots(device.id, locale).map((shot, index) => (
+            <figure>
+              <Image
+                src={shot.src}
+                alt={shot.alt}
+                widths={device.widths}
+                sizes={device.sizes}
+                loading={deviceIndex === 0 && index < 2 ? 'eager' : 'lazy'}
+              />
+            </figure>
+          ))}
+        </div>
+      ))
+    }
 
     <div class="wrap project-body">
       <div class="prose">
@@ -97,3 +127,30 @@ const { Content } = await render(app);
     </div>
   </article>
 </Base>
+
+<script>
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.device-switch [role="tab"]'));
+  const select = (tab: HTMLButtonElement) => {
+    for (const other of tabs) {
+      const selected = other === tab;
+      other.setAttribute('aria-selected', String(selected));
+      other.tabIndex = selected ? 0 : -1;
+      const panel = document.getElementById(other.getAttribute('aria-controls') ?? '');
+      if (panel) {
+        panel.hidden = !selected;
+        if (selected) panel.scrollLeft = 0;
+      }
+    }
+  };
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => select(tab));
+    tab.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+      const next = tabs[(index + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      next.focus();
+      select(next);
+    });
+  });
+</script>
+
+<noscript><style>.gallery[hidden] { display: flex !important; } .device-switch { display: none; }</style></noscript>
